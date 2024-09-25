@@ -16,7 +16,7 @@
                 <li><a href="menu.html">Menu</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="contact.html">Contact</a></li>
-                <li><a href="cart.html">Keranjang</a></li> <!-- Link ke halaman keranjang -->
+                <li><a href="cart.html">Keranjang</a></li>
             </ul>
         </nav>
     </header>
@@ -30,8 +30,12 @@
                 <p>Harga: Rp 12.000</p>
                 <p>Ayam goreng yang dipenyet dengan sambal setan khas Cobek-19. Pedasnya menggigit, 
                     namun tetap menghadirkan kelezatan yang menggugah selera. Disajikan dengan lalapan segar.</p>
-                <input type="number" min="0" placeholder="Jumlah" id="qty-ayampenyet">
-                <button onclick="addToCart('AYAM PENYET COBEK-19', 12000, qty-ayampenyet.value)">Tambah ke Keranjang</button>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('ayampenyet', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-ayampenyet" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('ayampenyet', 1)">+</button>
+                    <button onclick="addToCart('AYAM PENYET COBEK-19', 12000, document.getElementById('qty-ayampenyet').value)">Tambah ke Keranjang</button>
+                </div>
             </div>
             <div class="menu-item">
                 <img src="aympnytcmplt.jpg" alt="Ayam Penyet Komplit">
@@ -39,32 +43,48 @@
                 <p>Harga: Rp 16.000</p>
                 <p>Hidangan spesial dengan tambahan tahu, tempe,
                     serta ayam goreng yang dipenyet dengan sambal khas.</p>
-                <input type="number" min="0" placeholder="Jumlah" id="qty-ayampenyetkomplit">
-                <button onclick="addToCart('AYAM PENYET COBEK KOMPLIT', 16000, qty-ayampenyetkomplit.value)">Tambah ke Keranjang</button>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('ayampenyetkomplit', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-ayampenyetkomplit" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('ayampenyetkomplit', 1)">+</button>
+                    <button onclick="addToCart('AYAM PENYET COBEK KOMPLIT', 16000, document.getElementById('qty-ayampenyetkomplit').value)">Tambah ke Keranjang</button>
+                </div>
             </div>
             <div class="menu-item">
                 <img src="esteh.jpg" alt="Es Teh">
                 <h3>ES TEH SUEGERR</h3>
                 <p>Harga: Rp 4.000</p>
                 <p>Teh hitam yang disajikan dengan es batu, memberikan kesegaran sempurna.</p>
-                <input type="number" min="0" placeholder="Jumlah" id="qty-esteh">
-                <button onclick="addToCart('ES TEH SUEGERR', 4000, qty-esteh.value)">Tambah ke Keranjang</button>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('esteh', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-esteh" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('esteh', 1)">+</button>
+                    <button onclick="addToCart('ES TEH SUEGERR', 4000, document.getElementById('qty-esteh').value)">Tambah ke Keranjang</button>
+                </div>
             </div>
             <div class="menu-item">
                 <img src="terong.jpg" alt="Terong Goreng">
                 <h3>Terong Goreng</h3>
                 <p>Harga: Rp 3.000 per helai</p>
                 <p>Terong ungu yang digoreng hingga renyah di luar namun lembut di dalam.</p>
-                <input type="number" min="0" placeholder="Jumlah" id="qty-terong">
-                <button onclick="addToCart('Terong Goreng', 3000, qty-terong.value)">Tambah ke Keranjang</button>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('terong', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-terong" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('terong', 1)">+</button>
+                    <button onclick="addToCart('Terong Goreng', 3000, document.getElementById('qty-terong').value)">Tambah ke Keranjang</button>
+                </div>
             </div>
             <div class="menu-item">
                 <img src="petai.jpg" alt="Petai Goreng">
                 <h3>Petai Goreng</h3>
                 <p>Harga: Rp 3.000 per helai</p>
                 <p>Petai yang digoreng hingga garing, memberikan rasa khas yang lezat.</p>
-                <input type="number" min="0" placeholder="Jumlah" id="qty-petai">
-                <button onclick="addToCart('Petai Goreng', 3000, qty-petai.value)">Tambah ke Keranjang</button>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('petai', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-petai" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('petai', 1)">+</button>
+                    <button onclick="addToCart('Petai Goreng', 3000, document.getElementById('qty-petai').value)">Tambah ke Keranjang</button>
+                </div>
             </div>
         </div>
     </section>
@@ -86,6 +106,14 @@
             } else {
                 alert("Silakan masukkan jumlah yang valid.");
             }
+        }
+
+        function updateQuantity(id, change) {
+            const quantityInput = document.getElementById('qty-' + id);
+            let currentValue = parseInt(quantityInput.value);
+            currentValue += change;
+            if (currentValue < 0) currentValue = 0;
+            quantityInput.value = currentValue;
         }
 
         // Simpan cart ke localStorage untuk akses di halaman lain
