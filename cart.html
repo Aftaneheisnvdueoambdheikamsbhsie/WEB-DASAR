@@ -46,8 +46,8 @@
     <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
-
-    <script>
+    
+ <script>
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         function updateCart() {
@@ -55,7 +55,7 @@
             cartItems.innerHTML = '';
             let total = 0;
 
-            cart.forEach((item, index) => {
+            cart.forEach((item) => {
                 const row = cartItems.insertRow();
                 row.insertCell(0).textContent = item.item;
                 row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
