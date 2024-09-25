@@ -135,6 +135,11 @@ margin: 0 5px;
 width: 40px;
 text-align: center;
 }
+
+#qr-code {
+margin-top: 20px;
+text-align: center;
+}
 footer {
 background-color: #333;
 color: #fff;
