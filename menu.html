@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Delicious Food</title>
+    <title>Menu - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
 </head>
 <body>
@@ -16,6 +16,7 @@
                 <li><a href="menu.html">Menu</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="cart.html">Keranjang</a></li> <!-- Link ke halaman keranjang -->
             </ul>
         </nav>
     </header>
@@ -24,38 +25,56 @@
         <h2>Our Menu</h2>
         <div class="menu-grid">
             <div class="menu-item">
-                <img src="aympnyt.jpg" alt="ayampenyet">
+                <img src="aympnyt.jpg" alt="Ayam Penyet">
                 <h3>AYAM PENYET COBEK-19</h3>
                 <p>Ayam goreng yang dipenyet dengan sambal setan khas Cobek-19. Pedasnya menggigit, 
-                    namun tetap menghadirkan kelezatan yang menggugah selera. Disajikan dengan lalapan segar..</p>
+                    namun tetap menghadirkan kelezatan yang menggugah selera. Disajikan dengan lalapan segar.</p>
+                <button onclick="addToCart('AYAM PENYET COBEK-19')">Tambah ke Keranjang</button>
             </div>
             <div class="menu-item">
-                <img src="aympnytcmplt.jpg" alt="ayampnytcomplit">
+                <img src="aympnytcmplt.jpg" alt="Ayam Penyet Komplit">
                 <h3>AYAM PENYET COBEK KOMPLIT</h3>
-                <p> Hidangan spesial dengan tambahan tahu, tempe,
-                    serta ayam goreng yang dipenyet dengan sambal khas. Paket lengkap untuk menikmati cita rasa ayam penyet otentik.</p>
+                <p>Hidangan spesial dengan tambahan tahu, tempe,
+                    serta ayam goreng yang dipenyet dengan sambal khas.</p>
+                <button onclick="addToCart('AYAM PENYET COBEK KOMPLIT')">Tambah ke Keranjang</button>
             </div>
             <div class="menu-item">
-                <img src="esteh.jpg" alt="esteh">
+                <img src="esteh.jpg" alt="Es Teh">
                 <h3>ES TEH SUEGERR</h3>
-                <p>Teh hitam yang disajikan dengan es batu, memberikan kesegaran sempurna untuk menemani hidangan pedas Anda.</p>
+                <p>Teh hitam yang disajikan dengan es batu, memberikan kesegaran sempurna.</p>
+                <button onclick="addToCart('ES TEH SUEGERR')">Tambah ke Keranjang</button>
             </div>
             <div class="menu-item">
-                <img src="terong.jpg" alt="terong">
+                <img src="terong.jpg" alt="Terong Goreng">
                 <h3>Terong Goreng</h3>
-                <p>Terong ungu yang digoreng hingga renyah di luar namun lembut di dalam. Pas untuk menemani ayam penyet atau dinikmati sebagai camilan.</p>
+                <p>Terong ungu yang digoreng hingga renyah di luar namun lembut di dalam.</p>
+                <button onclick="addToCart('Terong Goreng')">Tambah ke Keranjang</button>
             </div>
             <div class="menu-item">
-                <img src="petai.jpg" alt="petai">
+                <img src="petai.jpg" alt="Petai Goreng">
                 <h3>Petai Goreng</h3>
-                <p>Petai yang digoreng hingga garing, memberikan rasa khas yang lezat. Cocok dijadikan lauk pendamping yang nikmat.</p>
+                <p>Petai yang digoreng hingga garing, memberikan rasa khas yang lezat.</p>
+                <button onclick="addToCart('Petai Goreng')">Tambah ke Keranjang</button>
             </div>
-        </div>
         </div>
     </section>
 
     <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
+
+    <script>
+        const cart = [];
+
+        function addToCart(item) {
+            cart.push(item);
+            alert(item + " telah ditambahkan ke keranjang!");
+        }
+
+        // Simpan cart ke localStorage untuk akses di halaman lain
+        window.onbeforeunload = () => {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        };
+    </script>
 </body>
 </html>
