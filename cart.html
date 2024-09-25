@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
+    <link rel="stylesheet" href="styless.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-qrcode/1.0.0/jquery.qrcode.min.js"></script>
+    <style>
+        #qr-code {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="dokterbg.png" alt="Logo" class="small-logo">
+        <h1>Keranjang Belanja</h1>
+        <nav>
+            <ul>
+                <li><a href="MENU.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="cart.html">Keranjang</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="cart">
+        <h2>Item dalam Keranjang</h2>
+        <div id="cart-items"></div>
+        <button id="generate-qr">Generate QR Code</button>
+        <div id="qr-code"></div>
+    </section>
+
+    <footer>
+        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsDiv = $('#cart-items');
+
+            if (cart.length === 0) {
+                cartItemsDiv.html('<p>Keranjang Anda kosong.</p>');
+            } else {
+                cart.forEach(item => {
+                    cartItemsDiv.append('<p>' + item + '</p>');
+                });
+            }
+
+            $('#generate-qr').click(function() {
+                const qrData = cart.join(', ');
+                $('#qr-code').empty().qrcode(qrData);
+            });
+        });
+    </script>
+</body>
+</html>
