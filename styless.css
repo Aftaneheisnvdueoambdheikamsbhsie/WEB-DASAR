@@ -70,16 +70,55 @@ p {
     height:auto;
     border-radius: 8px;
 }
-
-.sponsorship {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+#contact {
+    padding: 20px;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+.logo-large {
+    max-width: 150px;
+    height: auto;
+    margin: 20px 0;
+}
+.food-services {
+    list-style: none;
+    padding: 0;
+}
+.food-services li {
+    display: inline-block;
+    margin: 0 10px;
+}
+.logo-small {
+    width: 80px;
+    height: auto;
+}
+#partners {
+    padding: 20px;
+    background-color: #ffffff;
+    text-align: center;
 }
 
-.sponsor-logo {
-    width: 100px;
-    margin: 0 10px;
+.partner-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.partner-item {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+.partner-item:hover {
+    transform: scale(1.05);
+    background-color: #f1f1f1;
+}
+.partner-logo {
+    max-width: 100px;
+    height: auto;
 }
 footer {
     background-color: #333;
