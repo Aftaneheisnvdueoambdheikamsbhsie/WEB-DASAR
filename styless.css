@@ -37,7 +37,14 @@ nav ul li a {
     color: white;
     text-decoration: none;
 }
+h1, h2, h3 {
+    font-size: 2em;
+}
 
+p {
+    font-size: 1.2em; 
+    line-height: 1.6;
+}
 #menu {
     padding: 50px;
     text-align: center;
@@ -60,6 +67,7 @@ nav ul li a {
 
 .menu-item img {
     max-width: 100%;
+    height:auto;
     border-radius: 8px;
 }
 
