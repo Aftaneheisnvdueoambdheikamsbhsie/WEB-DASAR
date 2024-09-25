@@ -3,37 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
+    <title>Menu - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-qrcode/1.0.0/jquery.qrcode.min.js"></script>
-    <style>
-        #qr-code {
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
     <header>
         <img src="dokterbg.png" alt="Logo" class="small-logo">
-        <h1>Keranjang Belanja</h1>
+        <h1>Ayam Penyet Cobek-19</h1>
         <nav>
             <ul>
                 <li><a href="MENU.html">Home</a></li>
                 <li><a href="menu.html">Menu</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="contact.html">Contact</a></li>
-                <li><a href="cart.html">Keranjang</a></li>
+                <li><a href="cart.html">Keranjang</a></li> <!-- Link ke halaman keranjang -->
             </ul>
         </nav>
     </header>
 
-    <section id="cart">
-        <h2>Item dalam Keranjang</h2>
-        <div id="cart-items"></div>
-        <button id="generate-qr">Generate QR Code</button>
-        <div id="qr-code"></div>
+    <section id="menu">
+        <h2>Our Menu</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <img src="aympnyt.jpg" alt="Ayam Penyet">
+                <h3>AYAM PENYET COBEK-19</h3>
+                <p>Harga: Rp 12.000</p>
+                <p>Ayam goreng yang dipenyet dengan sambal setan khas Cobek-19. Pedasnya menggigit, 
+                    namun tetap menghadirkan kelezatan yang menggugah selera. Disajikan dengan lalapan segar.</p>
+                <input type="number" min="0" placeholder="Jumlah" id="qty-ayampenyet">
+                <button onclick="addToCart('AYAM PENYET COBEK-19', 12000, qty-ayampenyet.value)">Tambah ke Keranjang</button>
+            </div>
+            <div class="menu-item">
+                <img src="aympnytcmplt.jpg" alt="Ayam Penyet Komplit">
+                <h3>AYAM PENYET COBEK KOMPLIT</h3>
+                <p>Harga: Rp 16.000</p>
+                <p>Hidangan spesial dengan tambahan tahu, tempe,
+                    serta ayam goreng yang dipenyet dengan sambal khas.</p>
+                <input type="number" min="0" placeholder="Jumlah" id="qty-ayampenyetkomplit">
+                <button onclick="addToCart('AYAM PENYET COBEK KOMPLIT', 16000, qty-ayampenyetkomplit.value)">Tambah ke Keranjang</button>
+            </div>
+            <div class="menu-item">
+                <img src="esteh.jpg" alt="Es Teh">
+                <h3>ES TEH SUEGERR</h3>
+                <p>Harga: Rp 4.000</p>
+                <p>Teh hitam yang disajikan dengan es batu, memberikan kesegaran sempurna.</p>
+                <input type="number" min="0" placeholder="Jumlah" id="qty-esteh">
+                <button onclick="addToCart('ES TEH SUEGERR', 4000, qty-esteh.value)">Tambah ke Keranjang</button>
+            </div>
+            <div class="menu-item">
+                <img src="terong.jpg" alt="Terong Goreng">
+                <h3>Terong Goreng</h3>
+                <p>Harga: Rp 3.000 per helai</p>
+                <p>Terong ungu yang digoreng hingga renyah di luar namun lembut di dalam.</p>
+                <input type="number" min="0" placeholder="Jumlah" id="qty-terong">
+                <button onclick="addToCart('Terong Goreng', 3000, qty-terong.value)">Tambah ke Keranjang</button>
+            </div>
+            <div class="menu-item">
+                <img src="petai.jpg" alt="Petai Goreng">
+                <h3>Petai Goreng</h3>
+                <p>Harga: Rp 3.000 per helai</p>
+                <p>Petai yang digoreng hingga garing, memberikan rasa khas yang lezat.</p>
+                <input type="number" min="0" placeholder="Jumlah" id="qty-petai">
+                <button onclick="addToCart('Petai Goreng', 3000, qty-petai.value)">Tambah ke Keranjang</button>
+            </div>
+        </div>
     </section>
 
     <footer>
@@ -41,23 +74,24 @@
     </footer>
 
     <script>
-        $(document).ready(function() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartItemsDiv = $('#cart-items');
+        const cart = [];
 
-            if (cart.length === 0) {
-                cartItemsDiv.html('<p>Keranjang Anda kosong.</p>');
+        function addToCart(item, price, quantity) {
+            const qty = parseInt(quantity);
+            if (qty > 0) {
+                for (let i = 0; i < qty; i++) {
+                    cart.push({ item, price });
+                }
+                alert(qty + " x " + item + " telah ditambahkan ke keranjang!");
             } else {
-                cart.forEach(item => {
-                    cartItemsDiv.append('<p>' + item + '</p>');
-                });
+                alert("Silakan masukkan jumlah yang valid.");
             }
+        }
 
-            $('#generate-qr').click(function() {
-                const qrData = cart.join(', ');
-                $('#qr-code').empty().qrcode(qrData);
-            });
-        });
+        // Simpan cart ke localStorage untuk akses di halaman lain
+        window.onbeforeunload = () => {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        };
     </script>
 </body>
 </html>
