@@ -71,6 +71,16 @@ p {
     border-radius: 8px;
 }
 
+.sponsorship {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.sponsor-logo {
+    width: 100px;
+    margin: 0 10px;
+}
 footer {
     background-color: #333;
     color: #fff;
