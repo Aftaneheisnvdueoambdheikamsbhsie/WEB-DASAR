@@ -93,8 +93,8 @@
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
 
-    <script>
-        const cart = [];
+     <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         function addToCart(item, price, quantity) {
             const qty = parseInt(quantity);
@@ -103,6 +103,7 @@
                     cart.push({ item, price });
                 }
                 alert(qty + " x " + item + " telah ditambahkan ke keranjang!");
+                localStorage.setItem('cart', JSON.stringify(cart)); // Simpan ke localStorage
             } else {
                 alert("Silakan masukkan jumlah yang valid.");
             }
@@ -115,11 +116,6 @@
             if (currentValue < 0) currentValue = 0;
             quantityInput.value = currentValue;
         }
-
-        // Simpan cart ke localStorage untuk akses di halaman lain
-        window.onbeforeunload = () => {
-            localStorage.setItem('cart', JSON.stringify(cart));
-        };
     </script>
 </body>
 </html>
