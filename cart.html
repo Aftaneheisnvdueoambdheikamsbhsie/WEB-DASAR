@@ -7,13 +7,17 @@
     <link rel="stylesheet" href="styless.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-qrcode/1.0.0/jquery.qrcode.min.js"></script>
-
- 
+    <style>
+        #qr-code {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header>
         <img src="dokterbg.png" alt="Logo" class="small-logo">
-        <h1>Keranjang Belanja</h1>
+        <h1>Ayam Penyet Cobek-19</h1>
         <nav>
             <ul>
                 <li><a href="MENU.html">Home</a></li>
@@ -46,22 +50,28 @@
     <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
-    
- <script>
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    <script>
+        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
         function updateCart() {
             const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
             cartItems.innerHTML = '';
             let total = 0;
 
-            cart.forEach((item) => {
+            const groupedCart = cart.reduce((acc, item) => {
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                acc[item.item].qty += 1;
+                return acc;
+            }, {});
+
+            Object.values(groupedCart).forEach((item) => {
                 const row = cartItems.insertRow();
                 row.insertCell(0).textContent = item.item;
                 row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
-                row.insertCell(2).textContent = '1'; // Set to 1 karena item ditambahkan per item
-                row.insertCell(3).textContent = 'Rp ' + item.price.toLocaleString();
-                total += item.price;
+                row.insertCell(2).textContent = item.qty;
+                row.insertCell(3).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
+                total += item.price * item.qty;
             });
 
             document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
@@ -84,7 +94,7 @@
             const qrCodeCanvas = document.querySelector('#qr-code canvas');
             if (qrCodeCanvas) {
                 const link = document.createElement('a');
-                link.download = 'qris.jpg';
+                link.download = 'qrcode.png';
                 link.href = qrCodeCanvas.toDataURL();
                 link.innerText = 'Download QR Code';
                 qrCodeContainer.appendChild(link);
