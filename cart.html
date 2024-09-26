@@ -3,12 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nota Belanja - Ayam Penyet Cobek-19</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
+    <link rel="stylesheet" href="styless.css">
 
+    <!-- CDN jQuery and QR Code Plugin -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    </style>
 </head>
 <body>
+    <header>
+        <img src="dokterbg.png" alt="Logo" class="small-logo">
+        <h1>Ayam Penyet Cobek-19</h1>
+        <nav>
+            <ul>
+                <li><a href="MENU.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="cart.html">Keranjang</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="cart">
+        <h2>Items in Your Cart</h2>
+        <table id="cart-items" border="1">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h3 id="total-price">Total: Rp 0</h3>
+
+        <div class="buttons">
+            <!-- Generate QR Code Button -->
+            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
+            
+            <!-- Save Nota Button -->
+            <button class="button-small" id="showNotaButton">Show Nota</button>
+        </div>
+
+        <div class="qr-barcode">
+            <div id="qr-code"></div>
+            <div id="barcode"></div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
+    </footer>
+
+    <!-- Modal for showing nota before saving -->
     <div id="notaModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -21,101 +73,114 @@
                 <p>Jl. Akses UI No.82, Tugu, Depok</p>
             </div>
 
-            <!-- Nota Content -->
-            <div id="notaContent" class="nota-content">
-                <!-- Informasi Pelanggan dan Transaksi -->
-                <div class="nota-info">
-                    <div><strong>Pelanggan:</strong> <span id="pelangganNama">Tata</span></div>
-                    <div><strong>Tanggal Order:</strong> <span id="tanggalOrder">25 September 2024 - 19:24</span></div>
-                    <div><strong>Kode Transaksi:</strong> <span id="kodeTransaksi">MGDKD56656Q</span></div>
-                    <div><strong>Status Pembayaran:</strong> <span id="statusPembayaran">Lunas</span></div>
-                </div>
+            <!-- Nota Content (Menu, Price, etc.) -->
+            <div id="notaContent" class="nota-content"></div>
 
-                <!-- Order Detail with Items and Pricing -->
-                <div class="nota-section">
-                    <div class="nota-item">
-                        <span>1x Ayam Penyet</span><span>Rp 12.000</span>
-                    </div>
-                    <div class="nota-item">
-                        <span>2x Ayam Cobek Komplit</span><span>Rp 32.000</span>
-                    </div>
-                    <div class="nota-item">
-                        <span>1x Es Teh</span><span>Rp 4.000</span>
-                    </div>
-                    <div class="nota-item">
-                        <span>1x Petai</span><span>Rp 3.000</span>
-                    </div>
-                </div>
-
-                <!-- Total, Sub Total, Tax, and Rounding -->
-                <div class="nota-summary">
-                    <div>Sub Total</div>
-                    <div>Rp 51.000</div>
-                </div>
-                <div class="nota-summary">
-                    <div>Tax</div>
-                    <div>Rp 5.100</div>
-                </div>
-                <div class="nota-summary">
-                    <div>Rounding</div>
-                    <div>Rp 100</div>
-                </div>
-                <div class="nota-summary">
-                    <div><strong>Total</strong></div>
-                    <div><strong>Rp 56.000</strong></div>
-                </div>
-
-                <!-- Footer with Download Button -->
-                <div class="nota-footer">
-                    <button class="button-small" onclick="saveNota()">Download Nota</button>
-                </div>
-            </div>
+            <!-- Download Nota Button -->
+            <button class="button-small" onclick="saveNota()">Download Nota</button>
         </div>
     </div>
 
     <script>
-        // Function to open Nota Modal
-        function openModal() {
-            document.getElementById('notaModal').style.display = 'block';
+        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+        // Update Cart Table
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            const groupedCart = cart.reduce((acc, item) => {
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                acc[item.item].qty += 1;
+                return acc;
+            }, {});
+
+            Object.values(groupedCart).forEach((item) => {
+                const row = cartItems.insertRow();
+                row.insertCell(0).textContent = item.item;
+                row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
+                row.insertCell(2).textContent = item.qty;
+                row.insertCell(3).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
+                total += item.price * item.qty;
+            });
+
+            document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
         }
 
-        // Function to close Nota Modal
-        function closeModal() {
-            document.getElementById('notaModal').style.display = 'none';
+        // Generate QR Code Function
+        function generateQRCode() {
+            const qrCodeContainer = document.getElementById('qr-code');
+            qrCodeContainer.innerHTML = ''; // Clear previous QR code
+
+            const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+            const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
+
+            // Use QRCode.js to generate the QR code
+            new QRCode(qrCodeContainer, {
+                text: qrData,
+                width: 128,
+                height: 128
+            });
+
+            // Center the QR code and adjust button sizes
+            qrCodeContainer.style.display = 'inline-block';
+            document.querySelector('.qr-barcode').style.display = 'block';
         }
 
-        // Function to save Nota as text file
+        // Save Nota (Invoice) Function
         function saveNota() {
-            const notaContent = `
-                Ayam Penyet Cobek-19
-                Jl. Akses UI No.82, Tugu, Depok
+            let notaText = 'Nota Belanja\n\n';
+            let total = 0;
 
-                Pelanggan: Tata
-                Tanggal Order: 25 September 2024 - 19:24
-                Kode Transaksi: MGDKD56656Q
-                Status Pembayaran: Lunas
+            const groupedCart = cart.reduce((acc, item) => {
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                acc[item.item].qty += 1;
+                return acc;
+            }, {});
 
-                Detail Pesanan:
-                1x Ayam Penyet                Rp 12.000
-                2x Ayam Cobek Komplit          Rp 32.000
-                1x Es Teh                      Rp 4.000
-                1x Petai                       Rp 3.000
+            Object.values(groupedCart).forEach((item) => {
+                notaText += `Item: ${item.item} | Harga: Rp ${item.price.toLocaleString()} | Jumlah: ${item.qty} | Total: Rp ${(item.price * item.qty).toLocaleString()}\n`;
+                total += item.price * item.qty;
+            });
 
-                Sub Total                      Rp 51.000
-                Tax                            Rp 5.100
-                Rounding                       Rp 100
-                Total                          Rp 56.000
-            `;
+            notaText += `\nTotal Belanja: Rp ${total.toLocaleString()}`;
 
-            const blob = new Blob([notaContent], { type: 'text/plain' });
+            const blob = new Blob([notaText], { type: 'text/plain' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'nota_belanja.txt';
             link.click();
         }
 
-        // Example to open the modal when needed
-        openModal();
+        // Show Nota Modal
+        document.getElementById('showNotaButton').addEventListener('click', () => {
+            const notaContent = document.getElementById('notaContent');
+            notaContent.innerHTML = '';
+
+            const groupedCart = cart.reduce((acc, item) => {
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                acc[item.item].qty += 1;
+                return acc;
+            }, {});
+
+            Object.values(groupedCart).forEach((item) => {
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('nota-item');
+                itemElement.innerHTML = `<span>${item.item} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span>`;
+                notaContent.appendChild(itemElement);
+            });
+
+            document.getElementById('notaModal').style.display = 'block';
+        });
+
+        // Close Nota Modal
+        function closeModal() {
+            document.getElementById('notaModal').style.display = 'none';
+        }
+
+        // Initialize Cart
+        updateCart();
     </script>
 </body>
 </html>
