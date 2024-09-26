@@ -60,18 +60,54 @@
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
 
-    <!-- Modal for showing nota before saving -->
-    <div id="notaModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Nota Belanja</h2>
+<!-- Modal untuk menampilkan nota sebelum disimpan -->
+<div id="notaModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        
+        <!-- Header Nota dengan Logo dan Informasi Gerai -->
+        <div class="nota-header">
+            <img src="dokterbg.png" alt="Logo" class="small-logo">
+            <h2>Ayam Penyet Cobek-19</h2>
+            <p>Jl. Akses UI No.82, Tugu, Depok</p>
+        </div>
 
-            <!-- Nota Header with Logo and Store Info -->
-            <div class="nota-header">
-                <img src="dokterbg.png" alt="Logo">
-                <p>Ayam Penyet Cobek-19</p>
-                <p>Jl. Akses UI No.82, Tugu, Depok</p>
-            </div>
+        <!-- Informasi Transaksi dan Pesanan -->
+        <div class="nota-info">
+            <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
+            <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
+            <p><strong>Tipe Order:</strong> <span id="notaOrderType"></span></p>
+            <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
+            <p><strong>Status Pembayaran:</strong> <span id="notaPaymentStatus"></span></p>
+        </div>
+
+        <!-- Tabel Detail Pesanan -->
+        <table id="notaTable" border="1">
+            <thead>
+                <tr>
+                    <th>Jumlah</th>
+                    <th>Menu</th>
+                    <th>Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Item Pesanan akan dimasukkan secara dinamis di sini -->
+            </tbody>
+        </table>
+
+        <!-- Informasi Total -->
+        <div class="nota-totals">
+            <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
+            <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
+            <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
+            <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
+        </div>
+
+        <!-- Tombol Download Nota -->
+        <button class="button-small" onclick="saveNota()">Download Nota</button>
+    </div>
+</div>
+
 
             <!-- Nota Content (Menu, Price, etc.) -->
             <div id="notaContent" class="nota-content"></div>
@@ -129,50 +165,101 @@
         }
 
         // Save Nota (Invoice) Function
-        function saveNota() {
-            let notaText = 'Nota Belanja\n\n';
-            let total = 0;
+// Fungsi Menyimpan Nota
+function saveNota() {
+    let notaText = 'Nota Belanja\n\n';
+    notaText += 'Pelanggan: ' + document.getElementById('notaCustomer').textContent + '\n';
+    notaText += 'Tanggal Order: ' + document.getElementById('notaOrderDate').textContent + '\n';
+    notaText += 'Tipe Order: ' + document.getElementById('notaOrderType').textContent + '\n';
+    notaText += 'Kode Transaksi: ' + document.getElementById('notaTransactionCode').textContent + '\n';
+    notaText += 'Status Pembayaran: ' + document.getElementById('notaPaymentStatus').textContent + '\n\n';
+    
+    notaText += 'Detail Pesanan:\n';
+    
+    // Tambahkan tiap item
+    const groupedCart = cart.reduce((acc, item) => {
+        if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+        acc[item.item].qty += 1;
+        return acc;
+    }, {});
 
-            const groupedCart = cart.reduce((acc, item) => {
-                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-                acc[item.item].qty += 1;
-                return acc;
-            }, {});
+    let subTotal = 0;
+    Object.values(groupedCart).forEach((item) => {
+        notaText += `${item.qty}x ${item.item} - Rp ${(item.price * item.qty).toLocaleString()}\n`;
+        subTotal += item.price * item.qty;
+    });
 
-            Object.values(groupedCart).forEach((item) => {
-                notaText += `Item: ${item.item} | Harga: Rp ${item.price.toLocaleString()} | Jumlah: ${item.qty} | Total: Rp ${(item.price * item.qty).toLocaleString()}\n`;
-                total += item.price * item.qty;
-            });
+    const tax = subTotal * 0.1;
+    const rounding = Math.round(subTotal + tax) - (subTotal + tax);
+    const total = subTotal + tax + rounding;
 
-            notaText += `\nTotal Belanja: Rp ${total.toLocaleString()}`;
+    notaText += `\nSub Total: Rp ${subTotal.toLocaleString()}`;
+    notaText += `\nPajak: Rp ${tax.toLocaleString()}`;
+    notaText += `\nPembulatan: Rp ${rounding.toFixed(0)}`;
+    notaText += `\nTotal Semua: Rp ${total.toLocaleString()}`;
 
-            const blob = new Blob([notaText], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'nota_belanja.txt';
-            link.click();
-        }
+    // Buat file dan unduh
+    const blob = new Blob([notaText], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'nota_belanja.txt';
+    link.click();
+}
+
 
         // Show Nota Modal
-        document.getElementById('showNotaButton').addEventListener('click', () => {
-            const notaContent = document.getElementById('notaContent');
-            notaContent.innerHTML = '';
+// Menampilkan Modal Nota
+document.getElementById('showNotaButton').addEventListener('click', () => {
+    const notaContent = document.getElementById('notaContent');
+    notaContent.innerHTML = '';
 
-            const groupedCart = cart.reduce((acc, item) => {
-                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-                acc[item.item].qty += 1;
-                return acc;
-            }, {});
+    const groupedCart = cart.reduce((acc, item) => {
+        if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+        acc[item.item].qty += 1;
+        return acc;
+    }, {});
 
-            Object.values(groupedCart).forEach((item) => {
-                const itemElement = document.createElement('div');
-                itemElement.classList.add('nota-item');
-                itemElement.innerHTML = `<span>${item.item} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span>`;
-                notaContent.appendChild(itemElement);
-            });
+    // Data statis contoh (ganti ini dengan data dinamis)
+    const customerName = "Tata";
+    const orderDate = new Date().toLocaleString();
+    const orderType = "Dine-in";
+    const transactionCode = "MGDKD56656Q";
+    const paymentStatus = "LUNAS";  // atau "BELUM LUNAS" berdasarkan status pembayaran
 
-            document.getElementById('notaModal').style.display = 'block';
-        });
+    // Isi informasi nota
+    document.getElementById('notaCustomer').textContent = customerName;
+    document.getElementById('notaOrderDate').textContent = orderDate;
+    document.getElementById('notaOrderType').textContent = orderType;
+    document.getElementById('notaTransactionCode').textContent = transactionCode;
+    document.getElementById('notaPaymentStatus').textContent = paymentStatus;
+
+    // Menghasilkan Tabel Item Pesanan
+    const notaTableBody = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
+    notaTableBody.innerHTML = '';
+
+    let subTotal = 0;
+    Object.values(groupedCart).forEach((item) => {
+        const row = notaTableBody.insertRow();
+        row.insertCell(0).textContent = item.qty + 'x';
+        row.insertCell(1).textContent = item.item;
+        row.insertCell(2).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
+        subTotal += item.price * item.qty;
+    });
+
+    // Isi jumlah total
+    const tax = subTotal * 0.1;  // asumsikan pajak 10%
+    const rounding = Math.round(subTotal + tax) - (subTotal + tax);
+    const total = subTotal + tax + rounding;
+
+    document.getElementById('notaSubTotal').textContent = 'Rp ' + subTotal.toLocaleString();
+    document.getElementById('notaTax').textContent = 'Rp ' + tax.toLocaleString();
+    document.getElementById('notaRounding').textContent = 'Rp ' + rounding.toFixed(0);
+    document.getElementById('notaTotal').textContent = 'Rp ' + total.toLocaleString();
+
+    // Tampilkan modal
+    document.getElementById('notaModal').style.display = 'block';
+});
+
 
         // Close Nota Modal
         function closeModal() {
