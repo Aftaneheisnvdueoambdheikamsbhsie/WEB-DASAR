@@ -64,12 +64,17 @@ p {
     padding: 20px;
     border-radius: 8px;
     max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
 .menu-item img {
     max-width: 100%;
     height:auto;
     border-radius: 8px;
+    margin-button:auto;
 }
 #contact {
     padding: 20px;
@@ -118,19 +123,26 @@ p {
     background-color: #f1f1f1;
 }
 .partner-logo {
-    max-width: 100px;
-    height: auto;
+max-width: 100px;
+height: auto;
 }
 .quantity-selector {
 display: flex;
+justify-content: space-between;
 align-items: center;
- }
+margin-top: 10px;
+}
 
 .quantity-selector button {
 padding: 5px 10px;
-font-size: 1.2em;
+font-size: 0.8em;
 margin: 0 5px;
- }
+background-color: #ff6347;
+color: white;
+border: none;
+cursor: pointer;
+ border-radius: 5px;
+}
 
 .quantity {
 width: 40px;
