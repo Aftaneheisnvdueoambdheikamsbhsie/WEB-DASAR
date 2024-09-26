@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-qrcode/1.0.0/jquery.qrcode.min.js"></script>
-    <style>
-        #qr-code {
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
+
+    <!-- CDN jQuery and QR Code Plugin -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 </head>
 <body>
     <header>
@@ -43,8 +39,13 @@
             <tbody></tbody>
         </table>
         <h3 id="total-price">Total: Rp 0</h3>
+
+        <!-- Generate QR Code Button -->
         <button onclick="generateQRCode()">Generate QR Code</button>
         <div id="qr-code"></div>
+
+        <!-- Save Nota Button -->
+        <button onclick="saveNota()">Save Nota</button>
     </section>
 
     <footer>
@@ -54,6 +55,7 @@
     <script>
         const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
+        // Update Cart Table
         function updateCart() {
             const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
             cartItems.innerHTML = '';
@@ -77,6 +79,7 @@
             document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
         }
 
+        // Generate QR Code Function
         function generateQRCode() {
             const qrCodeContainer = document.getElementById('qr-code');
             qrCodeContainer.innerHTML = ''; // Clear previous QR code
@@ -84,23 +87,40 @@
             const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
             const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
 
-            $('#qr-code').qrcode({
+            // Use QRCode.js to generate the QR code
+            const qrcode = new QRCode(qrCodeContainer, {
                 text: qrData,
                 width: 128,
                 height: 128
             });
-
-            // Simpan QR Code sebagai gambar
-            const qrCodeCanvas = document.querySelector('#qr-code canvas');
-            if (qrCodeCanvas) {
-                const link = document.createElement('a');
-                link.download = 'qrcode.png';
-                link.href = qrCodeCanvas.toDataURL();
-                link.innerText = 'Download QR Code';
-                qrCodeContainer.appendChild(link);
-            }
         }
 
+        // Save Nota (Invoice) Function
+        function saveNota() {
+            let notaText = 'Nota Belanja\n\n';
+            let total = 0;
+
+            const groupedCart = cart.reduce((acc, item) => {
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                acc[item.item].qty += 1;
+                return acc;
+            }, {});
+
+            Object.values(groupedCart).forEach((item) => {
+                notaText += `Item: ${item.item}\nHarga: Rp ${item.price.toLocaleString()}\nJumlah: ${item.qty}\nTotal: Rp ${(item.price * item.qty).toLocaleString()}\n\n`;
+                total += item.price * item.qty;
+            });
+
+            notaText += `Total Belanja: Rp ${total.toLocaleString()}\nTerima kasih telah berbelanja di Ayam Penyet Cobek-19!`;
+
+            const blob = new Blob([notaText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'nota_belanja.txt';
+            link.click();
+        }
+
+        // Load Cart Items on Page Load
         window.onload = updateCart;
     </script>
 </body>
