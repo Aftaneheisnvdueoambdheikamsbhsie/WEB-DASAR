@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
-
     <!-- CDN jQuery and QR Code Plugin -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -40,17 +39,27 @@
         </table>
         <h3 id="total-price">Total: Rp 0</h3>
 
-        <!-- Generate QR Code Button -->
-        <button onclick="generateQRCode()">Generate QR Code</button>
-        <div id="qr-code"></div>
-
-        <!-- Save Nota Button -->
-        <button onclick="saveNota()">Save Nota</button>
+        <div class="buttons">
+            <!-- Generate QR Code Button -->
+            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
+            <div id="qr-code"></div>
+            <!-- Save Nota Button -->
+            <button class="button-small" id="showNotaButton">Show Nota</button>
+        </div>
     </section>
 
     <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
+    <!-- Modal for showing nota before saving -->
+    <div id="notaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Nota Belanja</h2>
+            <div id="notaContent"></div>
+            <button class="button-small" onclick="saveNota()">Download Nota</button>
+        </div>
+    </div>
 
     <script>
         const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
@@ -88,7 +97,7 @@
             const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
 
             // Use QRCode.js to generate the QR code
-            const qrcode = new QRCode(qrCodeContainer, {
+            new QRCode(qrCodeContainer, {
                 text: qrData,
                 width: 128,
                 height: 128
@@ -120,8 +129,37 @@
             link.click();
         }
 
-        // Load Cart Items on Page Load
-        window.onload = updateCart;
+        // Show Nota Modal Function
+        document.getElementById('showNotaButton').addEventListener('click', function() {
+            const modal = document.getElementById('notaModal');
+            modal.style.display = 'block';
+
+            let notaHTML = '';
+            let total = 0;
+
+            const groupedCart = cart.reduce((acc, item) => {
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                acc[item.item].qty += 1;
+                return acc;
+            }, {});
+
+            Object.values(groupedCart).forEach((item) => {
+                notaHTML += `<p>Item: ${item.item} <br> Harga: Rp ${item.price.toLocaleString()} <br> Jumlah: ${item.qty} <br> Total: Rp ${(item.price * item.qty).toLocaleString()}</p><hr>`;
+                total += item.price * item.qty;
+            });
+
+            notaHTML += `<h3>Total Belanja: Rp ${total.toLocaleString()}</h3>`;
+            document.getElementById('notaContent').innerHTML = notaHTML;
+        });
+
+        // Close Modal
+        function closeModal() {
+            const modal = document.getElementById('notaModal');
+            modal.style.display = 'none';
+        }
+
+        // Initialize Cart
+        updateCart();
     </script>
 </body>
 </html>
