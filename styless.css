@@ -154,108 +154,112 @@ margin-top: 20px;
 text-align: center;
 }
 
-/* Modal and Layout Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
+       /* Modal and Layout Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* Pastikan modal berada di atas elemen lainnya */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Transparansi latar belakang modal */
+}
 
-        .modal-content {
-            background-color: #ffffff; /* Solid background */
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 90%;
-            max-width: 500px;
-            font-family: Arial, sans-serif;
-        }
+.modal-content {
+    background-color: #ffffff; /* Pastikan konten modal memiliki latar belakang solid */
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Tambah bayangan untuk lebih jelas */
+}
 
-        /* Nota Layout */
-        .nota-header {
-            text-align: center;
-        }
+/* Nota Layout */
+.nota-header {
+    text-align: center;
+}
 
-        .nota-header img {
-            width: 100px;
-            margin-bottom: 10px;
-        }
+.nota-header img {
+    width: 100px;
+    margin-bottom: 10px;
+}
 
-        .nota-section {
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-            padding: 10px 0;
-        }
+.nota-section {
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    padding: 10px 0;
+    background-color: #ffffff; /* Tambahkan latar belakang solid pada bagian nota */
+}
 
-        .nota-item {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #ddd;
-            padding: 5px 0;
-        }
+.nota-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+}
 
-        .nota-summary {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-        }
+.nota-summary {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
 
-        .nota-footer {
-            margin-top: 10px;
-            text-align: right;
-        }
+.nota-footer {
+    margin-top: 10px;
+    text-align: right;
+}
 
-        /* Style for Buttons */
-        .button-small {
-            padding: 10px 15px;
-            font-size: 14px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
+/* Style for Buttons */
+.button-small {
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
 
-        .button-small:hover {
-            background-color: darkred;
-        }
+.button-small:hover {
+    background-color: darkred;
+}
 
-        .nota-content {
-            line-height: 1.5;
-        }
+.nota-content {
+    line-height: 1.5;
+}
 
-        .nota-info {
-            text-align: left;
-            padding: 5px 0;
-        }
+.nota-info {
+    text-align: left;
+    padding: 5px 0;
+    background-color: #ffffff; /* Pastikan bagian ini juga memiliki latar belakang solid */
+}
 
-        .nota-info div {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #000; /* Added border to separate sections */
-            padding-bottom: 5px;
-        }
-        
-        .nota-info div:last-child {
-            border-bottom: none; /* Remove border for the last item */
-        }
+.nota-info div {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #000; /* Tambahkan border untuk memisahkan bagian */
+    padding-bottom: 5px;
+}
 
-        .nota-info strong {
-            width: 50%;
-        }
+.nota-info div:last-child {
+    border-bottom: none; /* Hapus border untuk item terakhir */
+}
 
-        .nota-info span {
-            width: 50%;
-            text-align: right;
-        }
+.nota-info strong {
+    width: 50%;
+}
+
+.nota-info span {
+    width: 50%;
+    text-align: right;
+}
+
 footer {
-background-color: #333;
-color: #fff;
-text-align: center;
-padding: 10px 0;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
 }
