@@ -40,6 +40,15 @@
         </table>
         <h3 id="total-price">Total: Rp 0</h3>
 
+        <!-- Input Manual Pelanggan -->
+        <div class="customer-info">
+            <label for="customerName">Nama Pelanggan:</label>
+            <input type="text" id="customerName" placeholder="Masukkan Nama">
+
+            <label for="customerPhone">Nomor HP:</label>
+            <input type="text" id="customerPhone" placeholder="Masukkan No HP">
+        </div>
+
         <div class="buttons">
             <!-- Generate QR Code Button -->
             <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
@@ -155,47 +164,24 @@
         qrCodeContainer.style.display = 'inline-block';
     }
 
-    // Save Nota Function
-    function saveNota() {
-        let notaText = 'Nota Belanja\n\n';
-        notaText += 'Pelanggan: ' + document.getElementById('notaCustomer').textContent + '\n';
-        notaText += 'Tanggal Order: ' + document.getElementById('notaOrderDate').textContent + '\n';
-        notaText += 'Tipe Order: ' + document.getElementById('notaOrderType').textContent + '\n';
-        notaText += 'Kode Transaksi: ' + document.getElementById('notaTransactionCode').textContent + '\n';
-        notaText += 'Status Pembayaran: ' + document.getElementById('notaPaymentStatus').textContent + '\n\n';
-        
-        notaText += 'Detail Pesanan:\n';
-        
-        const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-            acc[item.item].qty += 1;
-            return acc;
-        }, {});
-
-        let subTotal = 0;
-        Object.values(groupedCart).forEach((item) => {
-            notaText += `${item.qty}x ${item.item} - Rp ${(item.price * item.qty).toLocaleString()}\n`;
-            subTotal += item.price * item.qty;
-        });
-
-        const tax = subTotal * 0.1;
-        const rounding = Math.round(subTotal + tax) - (subTotal + tax);
-        const total = subTotal + tax + rounding;
-
-        notaText += `\nSub Total: Rp ${subTotal.toLocaleString()}`;
-        notaText += `\nPajak: Rp ${tax.toLocaleString()}`;
-        notaText += `\nPembulatan: Rp ${rounding.toFixed(0)}`;
-        notaText += `\nTotal Semua: Rp ${total.toLocaleString()}`;
-
-        const blob = new Blob([notaText], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'nota_belanja.txt';
-        link.click();
-    }
-
     // Show Nota Modal
     document.getElementById('showNotaButton').addEventListener('click', () => {
+        const customerName = document.getElementById('customerName').value;
+        const customerPhone = document.getElementById('customerPhone').value;
+
+        // Generate random transaction code and payment status
+        const transactionCode = 'TRX-' + Math.floor(Math.random() * 1000000);
+        const paymentStatus = 'Lunas';  // Atau bisa diubah ke status lain jika diperlukan
+
+        const now = new Date();
+        const orderDate = now.toLocaleDateString('id-ID');
+        
+        document.getElementById('notaCustomer').textContent = `${customerName} (${customerPhone})`;
+        document.getElementById('notaOrderDate').textContent = orderDate;
+        document.getElementById('notaOrderType').textContent = 'Dine-in / Takeaway';  // Diubah sesuai tipe order
+        document.getElementById('notaTransactionCode').textContent = transactionCode;
+        document.getElementById('notaPaymentStatus').textContent = paymentStatus;
+
         const groupedCart = cart.reduce((acc, item) => {
             if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
             acc[item.item].qty += 1;
@@ -213,25 +199,28 @@
         });
 
         const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const tax = subTotal * 0.1;
-        const rounding = Math.round(subTotal + tax) - (subTotal + tax);
-        const total = subTotal + tax + rounding;
+        const tax = subTotal * 0.1;  // Misal pajak 10%
+        const roundedTotal = Math.ceil(subTotal + tax);
 
         document.getElementById('notaSubTotal').textContent = 'Rp ' + subTotal.toLocaleString();
         document.getElementById('notaTax').textContent = 'Rp ' + tax.toLocaleString();
-        document.getElementById('notaRounding').textContent = 'Rp ' + rounding.toFixed(0);
-        document.getElementById('notaTotal').textContent = 'Rp ' + total.toLocaleString();
+        document.getElementById('notaRounding').textContent = 'Rp ' + (roundedTotal - subTotal - tax).toLocaleString();
+        document.getElementById('notaTotal').textContent = 'Rp ' + roundedTotal.toLocaleString();
 
-        document.getElementById('notaModal').style.display = 'flex';
+        document.getElementById('notaModal').style.display = 'block';
     });
 
-    // Close Modal Function
+    // Close Modal
     function closeModal() {
         document.getElementById('notaModal').style.display = 'none';
     }
 
-    // Initial Cart Update
-    updateCart();
+    // Save Nota as Image or PDF
+    function saveNota() {
+        alert('Fitur ini akan diimplementasikan untuk menyimpan Nota dalam format PDF atau gambar.');
+    }
+
+    updateCart(); // Call the function on page load
 </script>
 </body>
 </html>
