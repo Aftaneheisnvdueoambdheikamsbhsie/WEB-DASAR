@@ -165,16 +165,16 @@ text-align: center;
     height: 100%; 
     overflow: auto; 
     background-color: rgba(0, 0, 0, 0.4); 
-    align-items: center;
-    justify-content: center; 
+    align-items: none;
+    justify-content: none; 
 
 
 .modal-content {
     background-color: #fefefe;
-    margin: auto;
+    margin:15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Ukuran modal */
+    width: 90%; /* Ukuran modal */
     max-width: 600px; /* Maksimal lebar modal */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow */
     animation: fadeIn 0.3s; /* Animasi fade in */
@@ -216,6 +216,12 @@ text-align: center;
 }
 
 .nota-info {
+    border-bottom: 1px solid #ddd; /* Garis pembatas */
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+.nota-section {
+    border-top: 1px solid #000;
     border-bottom: 1px solid #ddd; /* Garis pembatas */
     margin-bottom: 20px;
     padding-bottom: 10px;
