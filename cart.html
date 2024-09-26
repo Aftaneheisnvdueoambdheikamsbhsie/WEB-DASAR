@@ -84,7 +84,7 @@
             const qrCodeCanvas = document.querySelector('#qr-code canvas');
             if (qrCodeCanvas) {
                 const link = document.createElement('a');
-                link.download = 'qrcode.png';
+                link.download = 'qris.jpg';
                 link.href = qrCodeCanvas.toDataURL();
                 link.innerText = 'Download QR Code';
                 qrCodeContainer.appendChild(link);
