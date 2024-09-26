@@ -219,13 +219,6 @@ text-align: center;
     border-bottom: 1px solid #ddd; /* Garis pembatas */
     margin-bottom: 20px;
     padding-bottom: 10px;
-}
-.nota-section {
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #ddd; /* Garis pembatas */
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-}
 
 .nota-details table {
     width: 100%;
