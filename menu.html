@@ -28,7 +28,6 @@
                 <img src="aympnyt.jpg" alt="Ayam Penyet">
                 <h3>AYAM PENYET COBEK-19</h3>
                 <p>Harga: Rp 12.000</p>
-                <p>Ayam goreng yang dipenyet dengan sambal setan khas Cobek-19.</p>
                 <div class="quantity-selector">
                     <button onclick="updateQuantity('ayampenyet', -1)">-</button>
                     <input type="number" class="quantity" id="qty-ayampenyet" value="0" min="0" readonly>
@@ -40,7 +39,6 @@
                 <img src="aympnytcmplt.jpg" alt="Ayam Penyet Komplit">
                 <h3>AYAM PENYET COBEK KOMPLIT</h3>
                 <p>Harga: Rp 16.000</p>
-                <p>Hidangan spesial dengan tambahan tahu, tempe, serta ayam goreng yang dipenyet.</p>
                 <div class="quantity-selector">
                     <button onclick="updateQuantity('ayampenyetkomplit', -1)">-</button>
                     <input type="number" class="quantity" id="qty-ayampenyetkomplit" value="0" min="0" readonly>
@@ -52,7 +50,6 @@
                 <img src="esteh.jpg" alt="Es Teh">
                 <h3>ES TEH SUEGERR</h3>
                 <p>Harga: Rp 4.000</p>
-                <p>Teh hitam yang disajikan dengan es batu.</p>
                 <div class="quantity-selector">
                     <button onclick="updateQuantity('esteh', -1)">-</button>
                     <input type="number" class="quantity" id="qty-esteh" value="0" min="0" readonly>
@@ -64,7 +61,6 @@
                 <img src="terong.jpg" alt="Terong Goreng">
                 <h3>Terong Goreng</h3>
                 <p>Harga: Rp 3.000 per helai</p>
-                <p>Terong ungu yang digoreng hingga renyah di luar namun lembut di dalam.</p>
                 <div class="quantity-selector">
                     <button onclick="updateQuantity('terong', -1)">-</button>
                     <input type="number" class="quantity" id="qty-terong" value="0" min="0" readonly>
@@ -76,12 +72,33 @@
                 <img src="petai.jpg" alt="Petai Goreng">
                 <h3>Petai Goreng</h3>
                 <p>Harga: Rp 3.000 per helai</p>
-                <p>Petai yang digoreng hingga garing, memberikan rasa khas yang lezat.</p>
                 <div class="quantity-selector">
                     <button onclick="updateQuantity('petai', -1)">-</button>
                     <input type="number" class="quantity" id="qty-petai" value="0" min="0" readonly>
                     <button onclick="updateQuantity('petai', 1)">+</button>
                     <button onclick="addToCart('Petai Goreng', 3000, document.getElementById('qty-petai').value)">Tambah ke Keranjang</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="petai.jpg" alt="Tahu Goreng">
+                <h3>Tahu Goreng</h3>
+                <p>Harga: Rp 2.000</p>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('tahu', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-tahu" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('tahu', 1)">+</button>
+                    <button onclick="addToCart('Tahu Goreng', 2000, document.getElementById('qty-tahu').value)">Tambah ke Keranjang</button>
+                </div>
+            </div>
+                <div class="menu-item">
+                <img src="tempe.png" alt="Tempe Goreng">
+                <h3>Tempe Goreng</h3>
+                <p>Harga: Rp 2.000</p>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('tempe', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-tempe" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('tempe', 1)">+</button>
+                    <button onclick="addToCart('Tempe Goreng', 2000, document.getElementById('qty-tempe').value)">Tambah ke Keranjang</button>
                 </div>
             </div>
         </div>
