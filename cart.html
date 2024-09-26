@@ -9,8 +9,6 @@
     <!-- CDN jQuery and QR Code Plugin -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-
-    </style>
 </head>
 <body>
     <header>
@@ -29,7 +27,7 @@
 
     <section id="cart">
         <h2>Items in Your Cart</h2>
-        <table id="cart-items" border="1">
+        <table id="cart-items" border="0">
             <thead>
                 <tr>
                     <th>Item</th>
@@ -82,18 +80,20 @@
         </div>
 
         <!-- Tabel Detail Pesanan -->
-        <table id="notaTable" border="1">
-            <thead>
-                <tr>
-                    <th>Jumlah</th>
-                    <th>Menu</th>
-                    <th>Harga</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Item Pesanan akan dimasukkan secara dinamis di sini -->
-            </tbody>
-        </table>
+        <div class="nota-details">
+            <table id="notaTable" border="0">
+                <thead>
+                    <tr>
+                        <th>Jumlah</th>
+                        <th>Menu</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Item Pesanan akan dimasukkan secara dinamis di sini -->
+                </tbody>
+            </table>
+        </div>
 
         <!-- Informasi Total -->
         <div class="nota-totals">
@@ -104,170 +104,134 @@
         </div>
 
         <!-- Tombol Download Nota -->
-        <button class="button-small" onclick="saveNota()">Download Nota</button>
-    </div>
-</div>
-
-
-            <!-- Nota Content (Menu, Price, etc.) -->
-            <div id="notaContent" class="nota-content"></div>
-
-            <!-- Download Nota Button -->
+        <div class="buttons" style="text-align: center;">
             <button class="button-small" onclick="saveNota()">Download Nota</button>
         </div>
     </div>
+</div>
 
-    <script>
-        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+<script>
+    const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-        // Update Cart Table
-        function updateCart() {
-            const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
-            cartItems.innerHTML = '';
-            let total = 0;
+    // Update Cart Table
+    function updateCart() {
+        const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
+        cartItems.innerHTML = '';
+        let total = 0;
 
-            const groupedCart = cart.reduce((acc, item) => {
-                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-                acc[item.item].qty += 1;
-                return acc;
-            }, {});
+        const groupedCart = cart.reduce((acc, item) => {
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+            acc[item.item].qty += 1;
+            return acc;
+        }, {});
 
-            Object.values(groupedCart).forEach((item) => {
-                const row = cartItems.insertRow();
-                row.insertCell(0).textContent = item.item;
-                row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
-                row.insertCell(2).textContent = item.qty;
-                row.insertCell(3).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
-                total += item.price * item.qty;
-            });
+        Object.values(groupedCart).forEach((item) => {
+            const row = cartItems.insertRow();
+            row.insertCell(0).textContent = item.item;
+            row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
+            row.insertCell(2).textContent = item.qty;
+            row.insertCell(3).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
+            total += item.price * item.qty;
+        });
 
-            document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
-        }
+        document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
+    }
 
-        // Generate QR Code Function
-        function generateQRCode() {
-            const qrCodeContainer = document.getElementById('qr-code');
-            qrCodeContainer.innerHTML = ''; // Clear previous QR code
+    // Generate QR Code Function
+    function generateQRCode() {
+        const qrCodeContainer = document.getElementById('qr-code');
+        qrCodeContainer.innerHTML = ''; // Clear previous QR code
 
-            const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
-            const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
+        const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+        const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
 
-            // Use QRCode.js to generate the QR code
-            new QRCode(qrCodeContainer, {
-                text: qrData,
-                width: 128,
-                height: 128
-            });
+        // Use QRCode.js to generate the QR code
+        new QRCode(qrCodeContainer, {
+            text: qrData,
+            width: 128,
+            height: 128
+        });
 
-            // Center the QR code and adjust button sizes
-            qrCodeContainer.style.display = 'inline-block';
-            document.querySelector('.qr-barcode').style.display = 'block';
-        }
+        qrCodeContainer.style.display = 'inline-block';
+    }
 
-        // Save Nota (Invoice) Function
-// Fungsi Menyimpan Nota
-function saveNota() {
-    let notaText = 'Nota Belanja\n\n';
-    notaText += 'Pelanggan: ' + document.getElementById('notaCustomer').textContent + '\n';
-    notaText += 'Tanggal Order: ' + document.getElementById('notaOrderDate').textContent + '\n';
-    notaText += 'Tipe Order: ' + document.getElementById('notaOrderType').textContent + '\n';
-    notaText += 'Kode Transaksi: ' + document.getElementById('notaTransactionCode').textContent + '\n';
-    notaText += 'Status Pembayaran: ' + document.getElementById('notaPaymentStatus').textContent + '\n\n';
-    
-    notaText += 'Detail Pesanan:\n';
-    
-    // Tambahkan tiap item
-    const groupedCart = cart.reduce((acc, item) => {
-        if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-        acc[item.item].qty += 1;
-        return acc;
-    }, {});
+    // Save Nota Function
+    function saveNota() {
+        let notaText = 'Nota Belanja\n\n';
+        notaText += 'Pelanggan: ' + document.getElementById('notaCustomer').textContent + '\n';
+        notaText += 'Tanggal Order: ' + document.getElementById('notaOrderDate').textContent + '\n';
+        notaText += 'Tipe Order: ' + document.getElementById('notaOrderType').textContent + '\n';
+        notaText += 'Kode Transaksi: ' + document.getElementById('notaTransactionCode').textContent + '\n';
+        notaText += 'Status Pembayaran: ' + document.getElementById('notaPaymentStatus').textContent + '\n\n';
+        
+        notaText += 'Detail Pesanan:\n';
+        
+        const groupedCart = cart.reduce((acc, item) => {
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+            acc[item.item].qty += 1;
+            return acc;
+        }, {});
 
-    let subTotal = 0;
-    Object.values(groupedCart).forEach((item) => {
-        notaText += `${item.qty}x ${item.item} - Rp ${(item.price * item.qty).toLocaleString()}\n`;
-        subTotal += item.price * item.qty;
+        let subTotal = 0;
+        Object.values(groupedCart).forEach((item) => {
+            notaText += `${item.qty}x ${item.item} - Rp ${(item.price * item.qty).toLocaleString()}\n`;
+            subTotal += item.price * item.qty;
+        });
+
+        const tax = subTotal * 0.1;
+        const rounding = Math.round(subTotal + tax) - (subTotal + tax);
+        const total = subTotal + tax + rounding;
+
+        notaText += `\nSub Total: Rp ${subTotal.toLocaleString()}`;
+        notaText += `\nPajak: Rp ${tax.toLocaleString()}`;
+        notaText += `\nPembulatan: Rp ${rounding.toFixed(0)}`;
+        notaText += `\nTotal Semua: Rp ${total.toLocaleString()}`;
+
+        const blob = new Blob([notaText], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'nota_belanja.txt';
+        link.click();
+    }
+
+    // Show Nota Modal
+    document.getElementById('showNotaButton').addEventListener('click', () => {
+        const groupedCart = cart.reduce((acc, item) => {
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+            acc[item.item].qty += 1;
+            return acc;
+        }, {});
+
+        const notaTableBody = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
+        notaTableBody.innerHTML = ''; // Clear previous table rows
+
+        Object.values(groupedCart).forEach((item) => {
+            const row = notaTableBody.insertRow();
+            row.insertCell(0).textContent = item.qty;
+            row.insertCell(1).textContent = item.item;
+            row.insertCell(2).textContent = 'Rp ' + item.price.toLocaleString();
+        });
+
+        const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const tax = subTotal * 0.1;
+        const rounding = Math.round(subTotal + tax) - (subTotal + tax);
+        const total = subTotal + tax + rounding;
+
+        document.getElementById('notaSubTotal').textContent = 'Rp ' + subTotal.toLocaleString();
+        document.getElementById('notaTax').textContent = 'Rp ' + tax.toLocaleString();
+        document.getElementById('notaRounding').textContent = 'Rp ' + rounding.toFixed(0);
+        document.getElementById('notaTotal').textContent = 'Rp ' + total.toLocaleString();
+
+        document.getElementById('notaModal').style.display = 'flex';
     });
 
-    const tax = subTotal * 0.1;
-    const rounding = Math.round(subTotal + tax) - (subTotal + tax);
-    const total = subTotal + tax + rounding;
+    // Close Modal Function
+    function closeModal() {
+        document.getElementById('notaModal').style.display = 'none';
+    }
 
-    notaText += `\nSub Total: Rp ${subTotal.toLocaleString()}`;
-    notaText += `\nPajak: Rp ${tax.toLocaleString()}`;
-    notaText += `\nPembulatan: Rp ${rounding.toFixed(0)}`;
-    notaText += `\nTotal Semua: Rp ${total.toLocaleString()}`;
-
-    // Buat file dan unduh
-    const blob = new Blob([notaText], { type: 'text/plain' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'nota_belanja.txt';
-    link.click();
-}
-
-
-        // Show Nota Modal
-// Menampilkan Modal Nota
-document.getElementById('showNotaButton').addEventListener('click', () => {
-    const notaContent = document.getElementById('notaContent');
-    notaContent.innerHTML = '';
-
-    const groupedCart = cart.reduce((acc, item) => {
-        if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-        acc[item.item].qty += 1;
-        return acc;
-    }, {});
-
-    // Data statis contoh (ganti ini dengan data dinamis)
-    const customerName = "Tata";
-    const orderDate = new Date().toLocaleString();
-    const orderType = "Dine-in";
-    const transactionCode = "MGDKD56656Q";
-    const paymentStatus = "LUNAS";  // atau "BELUM LUNAS" berdasarkan status pembayaran
-
-    // Isi informasi nota
-    document.getElementById('notaCustomer').textContent = customerName;
-    document.getElementById('notaOrderDate').textContent = orderDate;
-    document.getElementById('notaOrderType').textContent = orderType;
-    document.getElementById('notaTransactionCode').textContent = transactionCode;
-    document.getElementById('notaPaymentStatus').textContent = paymentStatus;
-
-    // Menghasilkan Tabel Item Pesanan
-    const notaTableBody = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-    notaTableBody.innerHTML = '';
-
-    let subTotal = 0;
-    Object.values(groupedCart).forEach((item) => {
-        const row = notaTableBody.insertRow();
-        row.insertCell(0).textContent = item.qty + 'x';
-        row.insertCell(1).textContent = item.item;
-        row.insertCell(2).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
-        subTotal += item.price * item.qty;
-    });
-
-    // Isi jumlah total
-    const tax = subTotal * 0.1;  // asumsikan pajak 10%
-    const rounding = Math.round(subTotal + tax) - (subTotal + tax);
-    const total = subTotal + tax + rounding;
-
-    document.getElementById('notaSubTotal').textContent = 'Rp ' + subTotal.toLocaleString();
-    document.getElementById('notaTax').textContent = 'Rp ' + tax.toLocaleString();
-    document.getElementById('notaRounding').textContent = 'Rp ' + rounding.toFixed(0);
-    document.getElementById('notaTotal').textContent = 'Rp ' + total.toLocaleString();
-
-    // Tampilkan modal
-    document.getElementById('notaModal').style.display = 'block';
-});
-
-
-        // Close Nota Modal
-        function closeModal() {
-            document.getElementById('notaModal').style.display = 'none';
-        }
-
-        // Initialize Cart
-        updateCart();
-    </script>
+    // Initial Cart Update
+    updateCart();
+</script>
 </body>
 </html>
