@@ -167,10 +167,6 @@ text-align: center;
     align-items: none;
     justify-content: none; 
 }
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
 .modal-content {
     background-color: #fefefe;
     margin:15% auto;
