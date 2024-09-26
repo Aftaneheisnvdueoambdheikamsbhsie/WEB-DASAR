@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
+
     <!-- CDN jQuery and QR Code Plugin -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
 </head>
 <body>
     <header>
@@ -42,21 +44,38 @@
         <div class="buttons">
             <!-- Generate QR Code Button -->
             <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
-            <div id="qr-code"></div>
+            
             <!-- Save Nota Button -->
             <button class="button-small" id="showNotaButton">Show Nota</button>
+        </div>
+
+        <div class="qr-barcode">
+            <div id="qr-code"></div>
+            <div id="barcode"></div>
         </div>
     </section>
 
     <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
+
     <!-- Modal for showing nota before saving -->
     <div id="notaModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Nota Belanja</h2>
-            <div id="notaContent"></div>
+
+            <!-- Nota Header with Logo and Store Info -->
+            <div class="nota-header">
+                <img src="dokterbg.png" alt="Logo">
+                <p>Ayam Penyet Cobek-19</p>
+                <p>Jl. Akses UI No.82, Tugu, Depok</p>
+            </div>
+
+            <!-- Nota Content (Menu, Price, etc.) -->
+            <div id="notaContent" class="nota-content"></div>
+
+            <!-- Download Nota Button -->
             <button class="button-small" onclick="saveNota()">Download Nota</button>
         </div>
     </div>
@@ -102,6 +121,10 @@
                 width: 128,
                 height: 128
             });
+
+            // Center the QR code and adjust button sizes
+            qrCodeContainer.style.display = 'inline-block';
+            document.querySelector('.qr-barcode').style.display = 'block';
         }
 
         // Save Nota (Invoice) Function
@@ -116,26 +139,23 @@
             }, {});
 
             Object.values(groupedCart).forEach((item) => {
-                notaText += `Item: ${item.item}\nHarga: Rp ${item.price.toLocaleString()}\nJumlah: ${item.qty}\nTotal: Rp ${(item.price * item.qty).toLocaleString()}\n\n`;
+                notaText += `Item: ${item.item} | Harga: Rp ${item.price.toLocaleString()} | Jumlah: ${item.qty} | Total: Rp ${(item.price * item.qty).toLocaleString()}\n`;
                 total += item.price * item.qty;
             });
 
-            notaText += `Total Belanja: Rp ${total.toLocaleString()}\nTerima kasih telah berbelanja di Ayam Penyet Cobek-19!`;
+            notaText += `\nTotal Belanja: Rp ${total.toLocaleString()}`;
 
-            const blob = new Blob([notaText], { type: 'text/plain;charset=utf-8' });
+            const blob = new Blob([notaText], { type: 'text/plain' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'nota_belanja.txt';
             link.click();
         }
 
-        // Show Nota Modal Function
-        document.getElementById('showNotaButton').addEventListener('click', function() {
-            const modal = document.getElementById('notaModal');
-            modal.style.display = 'block';
-
-            let notaHTML = '';
-            let total = 0;
+        // Show Nota Modal
+        document.getElementById('showNotaButton').addEventListener('click', () => {
+            const notaContent = document.getElementById('notaContent');
+            notaContent.innerHTML = '';
 
             const groupedCart = cart.reduce((acc, item) => {
                 if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
@@ -144,18 +164,18 @@
             }, {});
 
             Object.values(groupedCart).forEach((item) => {
-                notaHTML += `<p>Item: ${item.item} <br> Harga: Rp ${item.price.toLocaleString()} <br> Jumlah: ${item.qty} <br> Total: Rp ${(item.price * item.qty).toLocaleString()}</p><hr>`;
-                total += item.price * item.qty;
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('nota-item');
+                itemElement.innerHTML = `<span>${item.item} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span>`;
+                notaContent.appendChild(itemElement);
             });
 
-            notaHTML += `<h3>Total Belanja: Rp ${total.toLocaleString()}</h3>`;
-            document.getElementById('notaContent').innerHTML = notaHTML;
+            document.getElementById('notaModal').style.display = 'block';
         });
 
-        // Close Modal
+        // Close Nota Modal
         function closeModal() {
-            const modal = document.getElementById('notaModal');
-            modal.style.display = 'none';
+            document.getElementById('notaModal').style.display = 'none';
         }
 
         // Initialize Cart
