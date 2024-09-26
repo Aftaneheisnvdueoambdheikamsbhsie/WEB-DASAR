@@ -44,7 +44,7 @@ h1, h2, h3 {
 p {
     font-size: 1.2em; 
     line-height: 1.6;
-    text-align:justify;
+    text-align:center;
 }
 #menu {
     padding: 50px;
