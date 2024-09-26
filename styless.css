@@ -154,7 +154,6 @@ margin-top: 20px;
 text-align: center;
 }
 
-
 .modal {
     display: none; 
     position: fixed; 
@@ -167,8 +166,11 @@ text-align: center;
     background-color: rgba(0, 0, 0, 0.4); 
     align-items: none;
     justify-content: none; 
-
-
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 .modal-content {
     background-color: #fefefe;
     margin:15% auto;
