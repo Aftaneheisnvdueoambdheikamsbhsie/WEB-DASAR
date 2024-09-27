@@ -6,9 +6,11 @@
     <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
 
-    <!-- CDN jQuery and QR Code Plugin -->
+    <!-- CDN jQuery, QR Code Plugin, jsPDF, and html2canvas for PDF & Image export -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
 </head>
 <body>
     <header>
@@ -40,84 +42,20 @@
         </table>
         <h3 id="total-price">Total: Rp 0</h3>
 
-        <!-- Input Manual Pelanggan -->
-        <div class="customer-info">
-            <label for="customerName">Nama Pelanggan:</label>
-            <input type="text" id="customerName" placeholder="Masukkan Nama">
-
-            <label for="customerPhone">Nomor HP:</label>
-            <input type="text" id="customerPhone" placeholder="Masukkan No HP">
-        </div>
-
         <div class="buttons">
-            <!-- Generate QR Code Button -->
-            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
-            
-            <!-- Save Nota Button -->
+            <!-- Show Nota Button akan mengarahkan ke receipt.html untuk pengisian informasi pelanggan -->
             <button class="button-small" id="showNotaButton">Show Nota</button>
         </div>
 
-        <div class="qr-barcode">
+        <!-- Bagian QR dan Barcode di Tengah -->
+        <div class="qr-barcode" style="text-align: center;">
             <div id="qr-code"></div>
-            <div id="barcode"></div>
         </div>
     </section>
 
     <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
-
-<!-- Modal untuk menampilkan nota sebelum disimpan -->
-<div id="notaModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        
-        <!-- Header Nota dengan Logo dan Informasi Gerai -->
-        <div class="nota-header">
-            <img src="dokterbg.png" alt="Logo" class="small-logo">
-            <h2>Ayam Penyet Cobek-19</h2>
-            <p>Jl. Akses UI No.82, Tugu, Depok</p>
-        </div>
-
-        <!-- Informasi Transaksi dan Pesanan -->
-        <div class="nota-info">
-            <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
-            <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
-            <p><strong>Tipe Order:</strong> <span id="notaOrderType"></span></p>
-            <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
-            <p><strong>Status Pembayaran:</strong> <span id="notaPaymentStatus"></span></p>
-        </div>
-
-        <!-- Tabel Detail Pesanan -->
-        <div class="nota-details">
-            <table id="notaTable" border="0">
-                <thead>
-                    <tr>
-                        <th>Jumlah</th>
-                        <th>Menu</th>
-                        <th>Harga</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Item Pesanan akan dimasukkan secara dinamis di sini -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Informasi Total -->
-        <div class="nota-totals">
-            <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
-            <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
-            <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
-            <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
-        </div>
-
-        <!-- Tombol Download Nota -->
-        <div class="buttons" style="text-align: center;">
-            <button class="button-small" onclick="saveNota()">Download Nota</button>
-        </div>
-    </div>
-</div>
 
 <script>
     const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
@@ -146,110 +84,10 @@
         document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
     }
 
-    // Validasi input pelanggan sebelum menampilkan nota
-    function validateCustomerInfo() {
-        const customerName = document.getElementById('customerName').value;
-        const customerPhone = document.getElementById('customerPhone').value;
-
-        if (customerName.trim() === '' || customerPhone.trim() === '') {
-            alert('Harap masukkan nama dan nomor HP pelanggan sebelum melanjutkan.');
-            return false;
-        }
-
-        return true;
-    }
-
-    // Generate QR Code Function
-    function generateQRCode() {
-        const qrCodeContainer = document.getElementById('qr-code');
-        qrCodeContainer.innerHTML = ''; // Clear previous QR code
-
-        const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
-        const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
-
-        // Use QRCode.js to generate the QR code
-        const qrCode = new QRCode(qrCodeContainer, {
-            text: qrData,
-            width: 128,
-            height: 128
-        });
-
-        qrCodeContainer.style.display = 'inline-block';
-
-        // Add download button
-        const downloadButton = document.createElement('button');
-        downloadButton.textContent = 'Download QR Code';
-        downloadButton.classList.add('button-small');
-        downloadButton.addEventListener('click', () => downloadQRCode(qrCode._oDrawing._elCanvas));
-
-        qrCodeContainer.appendChild(downloadButton);
-    }
-
-    // Function to download QR code as image
-    function downloadQRCode(canvas) {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL();
-        link.download = 'qr-code.png';
-        link.click();
-    }
-
-    // Show Nota Modal
+    // Arahkan pengguna ke receipt.html untuk melengkapi informasi pelanggan
     document.getElementById('showNotaButton').addEventListener('click', () => {
-        if (!validateCustomerInfo()) return; // Cek validasi input pelanggan
-
-        const customerName = document.getElementById('customerName').value;
-        const customerPhone = document.getElementById('customerPhone').value;
-
-        // Generate random transaction code and payment status
-        const transactionCode = 'TRX-' + Math.floor(Math.random() * 1000000);
-        const paymentStatus = 'Lunas';  // Atau bisa diubah ke status lain jika diperlukan
-
-        const now = new Date();
-        const orderDate = now.toLocaleDateString('id-ID');
-        
-        document.getElementById('notaCustomer').textContent = `${customerName} (${customerPhone})`;
-        document.getElementById('notaOrderDate').textContent = orderDate;
-        document.getElementById('notaOrderType').textContent = 'Dine-in / Takeaway';  // Diubah sesuai tipe order
-        document.getElementById('notaTransactionCode').textContent = transactionCode;
-        document.getElementById('notaPaymentStatus').textContent = paymentStatus;
-
-        const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-            acc[item.item].qty += 1;
-            return acc;
-        }, {});
-
-        const notaTableBody = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-        notaTableBody.innerHTML = ''; // Clear previous table rows
-
-        Object.values(groupedCart).forEach((item) => {
-            const row = notaTableBody.insertRow();
-            row.insertCell(0).textContent = item.qty;
-            row.insertCell(1).textContent = item.item;
-            row.insertCell(2).textContent = 'Rp ' + item.price.toLocaleString();
-        });
-
-        const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const tax = subTotal * 0.1;  // Misal pajak 10%
-        const roundedTotal = Math.ceil(subTotal + tax);
-
-        document.getElementById('notaSubTotal').textContent = 'Rp ' + subTotal.toLocaleString();
-        document.getElementById('notaTax').textContent = 'Rp ' + tax.toLocaleString();
-        document.getElementById('notaRounding').textContent = 'Rp ' + (roundedTotal - subTotal - tax).toLocaleString();
-        document.getElementById('notaTotal').textContent = 'Rp ' + roundedTotal.toLocaleString();
-
-        document.getElementById('notaModal').style.display = 'block';
+        window.location.href = 'receipt.html';
     });
-
-    // Close Modal
-    function closeModal() {
-        document.getElementById('notaModal').style.display = 'none';
-    }
-
-    // Save Nota as Image or PDF
-    function saveNota() {
-        alert('Fitur ini akan diimplementasikan untuk menyimpan Nota dalam format PDF atau gambar.');
-    }
 
     updateCart(); // Call the function on page load
 </script>
