@@ -3,100 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styles.css">
-    <title>Keranjang Belanja</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <header>
         <h1>Keranjang Belanja</h1>
-        <nav>
-            <ul>
-                <li><a href="MENU.html">Home</a></li>
-                <li><a href="menu.html">Menu</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="cart.html">Keranjang Belanja</a></li>
-            </ul>
-        </nav>
     </header>
-    
-    <main>
-        <div id="cart">
-            <h2>Daftar Menu</h2>
-            <table class="menu-table">
-                <thead>
-                    <tr>
-                        <th>Menu</th>
-                        <th>Harga</th>
-                        <th>Kuantitas</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="cart-items">
-                    <!-- Cart items will be dynamically populated here -->
-                </tbody>
-            </table>
-            <div class="total-container">
-                <h3>Total Pembayaran: <span id="total-amount">0</span></h3>
-            </div>
-            <button class="button-small" id="show-receipt-btn">Show Nota</button>
+
+    <section id="customer-info">
+        <h2>Informasi Pelanggan</h2>
+        <form id="customerForm">
+            <label for="customerName">Nama :</label>
+            <input type="text" id="customerName" required>
+            <label for="customerPhone">Telepon:</label>
+            <input type="text" id="customerPhone" required>
+            <label for="customerAddress">Nomor meja:</label>
+            <input type="text" id="customerAddress" required>
+            <button type="submit">Simpan Informasi</button>
+        </form>
+    </section>
+
+    <section id="cart-items">
+        <h2>Daftar Belanja</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="cart-body">
+                <!-- Item cart akan ditambahkan di sini -->
+            </tbody>
+        </table>
+        <div id="total-price">
+            Total: <span id="total">Rp 0</span>
         </div>
-        
-        <div id="qr-code">
-            <h2>Generate QR Code</h2>
-            <button id="generate-qr-btn" class="button-small">Generate QR</button>
-            <div id="qr-display" style="display: none;"></div>
-        </div>
-    </main>
+    </section>
+
+    <button id="generate-qr" style="display:none;">Generate QR Code</button>
+    <div id="qr-container" style="display:none;">
+        <h3>QR Code Pembayaran</h3>
+        <img id="qr-code" alt="QR Code" />
+        <a id="download-qr" style="display:none;">Download QR Code</a>
+    </div>
+
+    <button id="generate-receipt" style="display:none;">Generate Nota</button>
+    <div id="receipt-container" style="display:none;">
+        <h3>Nota</h3>
+        <pre id="receipt"></pre>
+        <a id="download-receipt" style="display:none;">Download Nota</a>
+    </div>
 
     <footer>
-        <p>&copy; 2024 Ayam Penyet Cobek</p>
+        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
-
-    <!-- Modal untuk nota -->
-    <div class="modal" id="receipt-modal">
-        <div class="modal-content">
-            <span class="close" id="close-modal">&times;</span>
-            <h2>Nota Pembayaran</h2>
-            <div class="nota-section">
-                <div class="nota-info">
-                    <strong>Nama Pelanggan:</strong>
-                    <span id="customer-name"></span>
-                </div>
-                <div class="nota-info">
-                    <strong>Alamat:</strong>
-                    <span id="customer-address"></span>
-                </div>
-                <div class="nota-info">
-                    <strong>Nomor Telepon:</strong>
-                    <span id="customer-phone"></span>
-                </div>
-                <hr>
-                <div class="nota-info">
-                    <strong>Total Pembayaran:</strong>
-                    <span id="nota-total"></span>
-                </div>
-            </div>
-            <h3>Detail Nota</h3>
-            <table class="nota-table">
-                <thead>
-                    <tr>
-                        <th>Menu</th>
-                        <th>Harga</th>
-                        <th>Kuantitas</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="nota-items">
-                    <!-- Nota items will be dynamically populated here -->
-                </tbody>
-            </table>
-            <button id="download-receipt-btn" class="button-small">Download Nota</button>
-            <button id="download-qr-btn" class="button-small">Download QR</button>
-            <div id="qr-code-download" style="display: none;"></div>
-        </div>
-    </div>
 
     <script src="script.js"></script>
 </body>
