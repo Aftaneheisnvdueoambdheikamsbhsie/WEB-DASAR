@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
+    <title>Nota Belanja - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
 
     <!-- CDN jQuery, QR Code Plugin, jsPDF, and html2canvas for PDF & Image export -->
@@ -27,8 +27,15 @@
         </nav>
     </header>
 
-    <section id="cart">
-        <h2>Items in Your Cart</h2>
+    <section id="receipt">
+        <h2>Nota Pembelian</h2>
+        <!-- Menampilkan Informasi Pelanggan -->
+        <div id="customer-info">
+            <p><strong>Nama Pelanggan:</strong> <span id="displayCustomerName"></span></p>
+            <p><strong>Nomor HP:</strong> <span id="displayCustomerPhone"></span></p>
+        </div>
+
+        <!-- Menampilkan Daftar Belanjaan -->
         <table id="cart-items" border="0">
             <thead>
                 <tr>
@@ -42,15 +49,13 @@
         </table>
         <h3 id="total-price">Total: Rp 0</h3>
 
-        <div class="buttons">
-            <!-- Show Nota Button akan mengarahkan ke receipt.html untuk pengisian informasi pelanggan -->
-            <button class="button-small" id="showNotaButton">Show Nota</button>
-        </div>
-
-        <!-- Bagian QR dan Barcode di Tengah -->
+        <!-- QR Code Generator dan Download PDF -->
         <div class="qr-barcode" style="text-align: center;">
             <div id="qr-code"></div>
+            <button id="downloadQR">Download QR Code</button>
         </div>
+
+        <button id="downloadNota">Download Nota (PDF)</button>
     </section>
 
     <footer>
@@ -58,7 +63,14 @@
     </footer>
 
 <script>
+    // Mengambil data pelanggan dan belanjaan dari sessionStorage
+    const customerName = sessionStorage.getItem('customerName') || '';
+    const customerPhone = sessionStorage.getItem('customerPhone') || '';
     const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+    // Menampilkan informasi pelanggan di Nota
+    document.getElementById('displayCustomerName').textContent = customerName;
+    document.getElementById('displayCustomerPhone').textContent = customerPhone;
 
     // Update Cart Table
     function updateCart() {
@@ -84,12 +96,39 @@
         document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
     }
 
-    // Arahkan pengguna ke receipt.html untuk melengkapi informasi pelanggan
-    document.getElementById('showNotaButton').addEventListener('click', () => {
-        window.location.href = 'receipt.html';
+    // Menampilkan QR Code setelah halaman di-load
+    function generateQR() {
+        const qrCodeContainer = document.getElementById('qr-code');
+        const qrcode = new QRCode(qrCodeContainer, {
+            text: 'Pesanan Ayam Penyet Cobek-19',
+            width: 128,
+            height: 128
+        });
+    }
+
+    // Download QR Code sebagai gambar
+    document.getElementById('downloadQR').addEventListener('click', function () {
+        html2canvas(document.getElementById('qr-code')).then(function (canvas) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL();
+            link.download = 'QRCode.png';
+            link.click();
+        });
     });
 
-    updateCart(); // Call the function on page load
+    // Download Nota sebagai PDF
+    document.getElementById('downloadNota').addEventListener('click', function () {
+        const doc = new jsPDF();
+        doc.text(20, 20, 'Nota Pembelian Ayam Penyet Cobek-19');
+        doc.text(20, 30, `Nama Pelanggan: ${customerName}`);
+        doc.text(20, 40, `Nomor HP: ${customerPhone}`);
+        doc.text(20, 50, document.getElementById('total-price').textContent);
+
+        doc.save('NotaPembelian.pdf');
+    });
+
+    updateCart(); // Update daftar belanja
+    generateQR(); // Generate QR Code
 </script>
 </body>
 </html>
