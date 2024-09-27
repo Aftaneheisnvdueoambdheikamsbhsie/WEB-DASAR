@@ -146,6 +146,19 @@
         document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
     }
 
+    // Validasi input pelanggan sebelum menampilkan nota
+    function validateCustomerInfo() {
+        const customerName = document.getElementById('customerName').value;
+        const customerPhone = document.getElementById('customerPhone').value;
+
+        if (customerName.trim() === '' || customerPhone.trim() === '') {
+            alert('Harap masukkan nama dan nomor HP pelanggan sebelum melanjutkan.');
+            return false;
+        }
+
+        return true;
+    }
+
     // Generate QR Code Function
     function generateQRCode() {
         const qrCodeContainer = document.getElementById('qr-code');
@@ -155,17 +168,35 @@
         const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
 
         // Use QRCode.js to generate the QR code
-        new QRCode(qrCodeContainer, {
+        const qrCode = new QRCode(qrCodeContainer, {
             text: qrData,
             width: 128,
             height: 128
         });
 
         qrCodeContainer.style.display = 'inline-block';
+
+        // Add download button
+        const downloadButton = document.createElement('button');
+        downloadButton.textContent = 'Download QR Code';
+        downloadButton.classList.add('button-small');
+        downloadButton.addEventListener('click', () => downloadQRCode(qrCode._oDrawing._elCanvas));
+
+        qrCodeContainer.appendChild(downloadButton);
+    }
+
+    // Function to download QR code as image
+    function downloadQRCode(canvas) {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL();
+        link.download = 'qr-code.png';
+        link.click();
     }
 
     // Show Nota Modal
     document.getElementById('showNotaButton').addEventListener('click', () => {
+        if (!validateCustomerInfo()) return; // Cek validasi input pelanggan
+
         const customerName = document.getElementById('customerName').value;
         const customerPhone = document.getElementById('customerPhone').value;
 
