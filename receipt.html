@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Information - Ayam Penyet Cobek-19</title>
+    <link rel="stylesheet" href="styless.css">
+</head>
+<body>
+    <header>
+        <img src="dokterbg.png" alt="Logo" class="small-logo">
+        <h1>Ayam Penyet Cobek-19</h1>
+    </header>
+
+    <section id="customer-info">
+        <h2>Informasi Pelanggan</h2>
+        <form id="customerForm">
+            <label for="customerName">Nama Pelanggan:</label>
+            <input type="text" id="customerName" placeholder="Masukkan Nama" required>
+
+            <label for="customerPhone">Nomor HP:</label>
+            <input type="tel" id="customerPhone" placeholder="Masukkan No HP" required>
+
+            <button type="submit">Lanjutkan ke Nota</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
+    </footer>
+
+<script>
+    document.getElementById('customerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        // Simpan informasi pelanggan di sessionStorage
+        const customerName = document.getElementById('customerName').value;
+        const customerPhone = document.getElementById('customerPhone').value;
+
+        sessionStorage.setItem('customerName', customerName);
+        sessionStorage.setItem('customerPhone', customerPhone);
+
+        // Redirect ke cart.html untuk menampilkan nota
+        window.location.href = 'cart.html';
+    });
+</script>
+</body>
+</html>
