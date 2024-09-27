@@ -1,131 +1,279 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        header {
-            background-color: #e63946;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        header img {
-            width: 80px;
-        }
-        h1 {
-            margin: 10px 0;
-        }
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        nav ul li {
-            display: inline;
-            margin: 0 15px;
-        }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-        section {
-            padding: 20px;
-            background-color: white;
-            margin: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #e63946;
-            color: white;
-        }
-        .buttons {
-            text-align: center;
-        }
-        .button-small {
-            background-color: #e63946;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .button-small:hover {
-            background-color: #d62839;
-        }
-        .customer-info {
-            margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .customer-info label {
-            margin-bottom: 5px;
-        }
-        .customer-info input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .qr-barcode {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .nota-header img {
-            width: 80px;
-        }
-        .nota-details table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-        .nota-details th, .nota-details td {
-            border: 1px solid #ddd;
-            padding: 10px;
-        }
-        .nota-details th {
-            background-color: #e63946;
-            color: white;
-        }
-        .nota-totals {
-            margin-top: 20px;
-        }
-        .nota-totals p {
-            margin: 5px 0;
-        }
-        .separator {
-            border-top: 1px solid #ddd;
-            margin: 20px 0;
-        }
+.small-logo {
+    width: 50px;
+    height: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+header {
+    background-color: #ff6347;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    color: #fff;
+    font-size: 2.5em;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+h1, h2, h3 {
+    font-size: 2em;
+}
+
+p {
+    font-size: 1.2em; 
+    line-height: 1.6;
+    text-align:center;
+}
+
+#menu {
+    padding: 50px;
+    text-align: center;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.menu-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.menu-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: auto;
+}
+
+#contact {
+    padding: 20px;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+.logo-large {
+    max-width: 150px;
+    height: auto;
+    margin: 20px 0;
+}
+
+.food-services {
+    list-style: none;
+    padding: 0;
+}
+
+.food-services li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.logo-small {
+    width: 80px;
+    height: auto;
+}
+
+#partners {
+    padding: 20px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.partner-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.partner-item {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.partner-item:hover {
+    transform: scale(1.05);
+    background-color: #f1f1f1;
+}
+
+.partner-logo {
+    max-width: 100px;
+    height: auto;
+}
+
+.quantity-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.quantity-selector button {
+    padding: 5px 10px;
+    font-size: 0.8em;
+    margin: 0 5px;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.quantity {
+    width: 40px;
+    text-align: center;
+}
+
+#qr-code {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.nota-header {
+    text-align: center;
+}
+
+.nota-header img {
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.nota-section {
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    padding: 10px 0;
+    background-color: #ffffff;
+}
+
+.nota-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+}
+
+.nota-summary {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.nota-footer {
+    margin-top: 10px;
+    text-align: right;
+}
+
+.button-small {
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.button-small:hover {
+    background-color: darkred;
+}
+
+.nota-content {
+    line-height: 1.5;
+}
+
+.nota-info {
+    text-align: left;
+    padding: 5px 0;
+    background-color: #ffffff;
+}
+
+.nota-info div {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+}
+
+.nota-info div:last-child {
+    border-bottom: none;
+}
+
+.nota-info strong {
+    width: 50%;
+}
+
+.nota-info span {
+    width: 50%;
+    text-align: right;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
