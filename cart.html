@@ -3,267 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
-    <link rel="stylesheet" href="styless.css">
-
-    <!-- CDN jQuery and QR Code Plugin -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        header {
-            background-color: #e63946;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        header img {
-            width: 80px;
-        }
-        h1 {
-            margin: 10px 0;
-        }
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        nav ul li {
-            display: inline;
-            margin: 0 15px;
-        }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-        section {
-            padding: 20px;
-            background-color: white;
-            margin: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #e63946;
-            color: white;
-        }
-        .buttons {
-            text-align: center;
-        }
-        .button-small {
-            background-color: #e63946;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .button-small:hover {
-            background-color: #d62839;
-        }
-        .customer-info {
-            margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .customer-info label {
-            margin-bottom: 5px;
-        }
-        .customer-info input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .qr-barcode {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .nota-header img {
-            width: 80px;
-        }
-        .nota-details table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-        .nota-details th, .nota-details td {
-            border: 1px solid #ddd;
-            padding: 10px;
-        }
-        .nota-details th {
-            background-color: #e63946;
-            color: white;
-        }
-        .nota-totals {
-            margin-top: 20px;
-        }
-        .nota-totals p {
-            margin: 5px 0;
-        }
-        .separator {
-            border-top: 1px solid #ddd;
-            margin: 20px 0;
-        }
-    </style>
+    <title>Keranjang Belanja</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <header>
-        <img src="dokterbg.png" alt="Logo" class="small-logo">
-        <h1>Ayam Penyet Cobek-19</h1>
-        <nav>
-            <ul>
-                <li><a href="MENU.html">Home</a></li>
-                <li><a href="menu.html">Menu</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="cart.html">Keranjang</a></li>
-            </ul>
-        </nav>
+        <h1><img class="small-logo" src="logo.png" alt="Logo">Keranjang Belanja</h1>
     </header>
 
-    <section id="cart">
-        <h2>Keranjang Belanja</h2>
-        <table id="cart-items">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <h3 id="total-price">Total: Rp 0</h3>
-
-        <!-- Input Manual Pelanggan -->
-        <div class="customer-info">
-            <label for="customerName">Nama Pelanggan:</label>
-            <input type="text" id="customerName" placeholder="Masukkan Nama" required>
-
-            <label for="customerPhone">Nomor HP:</label>
-            <input type="text" id="customerPhone" placeholder="Masukkan No HP" required>
+    <div id="menu">
+        <div class="menu-grid" id="cart-items">
+            <!-- Cart items will be dynamically inserted here -->
         </div>
+        <div id="total-price">Total: Rp 0</div>
+    </div>
 
-        <div class="buttons">
-            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
-            <button class="button-small" id="showNotaButton">Show Nota</button>
-        </div>
+    <div id="customer-info">
+        <h2>Informasi Pelanggan</h2>
+        <input type="text" id="customerName" placeholder="Nama Pelanggan" required>
+        <input type="text" id="customerPhone" placeholder="Nomor Telepon" required>
+        <button id="generateQRCode" class="button-small">Generate QR Code</button>
+        <div id="qr-code"></div>
+    </div>
 
-        <div class="qr-barcode" id="qr-code-container">
-            <div id="qr-code"></div>
-        </div>
-    </section>
+    <button id="showNotaButton" class="button-small">Show Nota</button>
 
-    <footer>
-        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
-    </footer>
-
-    <!-- Modal untuk menampilkan nota sebelum disimpan -->
-    <div id="notaModal" class="modal">
+    <!-- Nota Modal -->
+    <div class="modal" id="notaModal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            
             <div class="nota-header">
-                <img src="dokterbg.png" alt="Logo" class="small-logo">
-                <h2>Ayam Penyet Cobek-19</h2>
-                <p>Jl. Akses UI No.82, Tugu, Depok</p>
+                <h2>Nota Pembelian</h2>
+                <img src="logo.png" alt="Logo">
             </div>
-
-            <div class="nota-info">
-                <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
-                <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
-                <p><strong>Tipe Order:</strong> <span id="notaOrderType"></span></p>
-                <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
-                <p><strong>Status Pembayaran:</strong> <span id="notaPaymentStatus"></span></p>
-            </div>
-
-            <div class="separator"></div>
-
-            <div class="nota-details">
+            <div class="nota-section" id="notaContent">
+                <div class="nota-info">
+                    <div><strong>Nama Pelanggan:</strong> <span id="notaCustomer"></span></div>
+                    <div><strong>Tanggal Pesanan:</strong> <span id="notaOrderDate"></span></div>
+                    <div><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></div>
+                </div>
                 <table id="notaTable">
                     <thead>
                         <tr>
-                            <th>Jumlah</th>
+                            <th>No</th>
                             <th>Menu</th>
                             <th>Harga</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
+                <div class="nota-summary">
+                    <div><strong>Subtotal:</strong> <span id="notaSubTotal"></span></div>
+                    <div><strong>Pajak:</strong> <span id="notaTax"></span></div>
+                    <div><strong>Pem rounding:</strong> <span id="notaRounding"></span></div>
+                    <div><strong>Total:</strong> <span id="notaTotal"></span></div>
+                </div>
             </div>
-
-            <div class="nota-totals">
-                <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
-                <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
-                <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
-                <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
-            </div>
-
-            <div class="buttons" style="text-align: center;">
-                <button class="button-small" onclick="saveNota()">Download Nota</button>
+            <div class="nota-footer">
+                <button id="downloadNota" class="button-small" onclick="downloadNota()">Download Nota</button>
+                <button id="downloadQR" class="button-small" onclick="downloadQRCode()">Download QR Code</button>
             </div>
         </div>
     </div>
 
+    <footer>
+        <p>&copy; 2024 Ayam Penyet Cobek</p>
+    </footer>
+
     <script>
-        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-
         function updateCart() {
-            const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
-            cartItems.innerHTML = '';
+            const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
+            const cartContainer = document.getElementById('cart-items');
+            cartContainer.innerHTML = ''; // Clear previous items
+
             let total = 0;
-
-            const groupedCart = cart.reduce((acc, item) => {
-                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-                acc[item.item].qty += 1;
-                return acc;
-            }, {});
-
-            Object.values(groupedCart).forEach((item) => {
-                const row = cartItems.insertRow();
-                row.insertCell(0).textContent = item.item;
-                row.insertCell(1).textContent = `Rp ${item.price.toFixed(2)}`;
-                row.insertCell(2).textContent = item.qty;
-                const totalItem = item.price * item.qty;
-                total += totalItem;
-                row.insertCell(3).textContent = `Rp ${totalItem.toFixed(2)}`;
+            cartItems.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.classList.add('menu-item');
+                row.innerHTML = `
+                    <p>${item.item}</p>
+                    <p>Rp ${item.price.toFixed(2)}</p>
+                    <p>Qty: ${item.qty}</p>
+                    <p>Total: Rp ${(item.price * item.qty).toFixed(2)}</p>
+                `;
+                cartContainer.appendChild(row);
+                total += item.price * item.qty;
             });
 
             document.getElementById('total-price').textContent = `Total: Rp ${total.toFixed(2)}`;
@@ -291,20 +118,18 @@
         document.getElementById('showNotaButton').addEventListener('click', function() {
             document.getElementById('notaCustomer').textContent = document.getElementById('customerName').value;
             document.getElementById('notaOrderDate').textContent = new Date().toLocaleString();
-            document.getElementById('notaOrderType').textContent = "Pesanan Diterima";
             document.getElementById('notaTransactionCode').textContent = Math.random().toString(36).substring(2, 15).toUpperCase();
-            document.getElementById('notaPaymentStatus').textContent = "Belum Dibayar"; // Change according to your logic
 
             const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
             notaTable.innerHTML = ''; // Clear previous nota details
 
             const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
             let subtotal = 0;
-            cartItems.forEach(item => {
+            cartItems.forEach((item, index) => {
                 const row = notaTable.insertRow();
-                row.insertCell(0).textContent = 1; // Assuming 1 item for simplicity
-                row.insertCell(1).textContent = item.item;
-                row.insertCell(2).textContent = `Rp ${item.price.toFixed(2)}`;
+                row.insertCell(0).textContent = index + 1; // No
+                row.insertCell(1).textContent = item.item; // Menu
+                row.insertCell(2).textContent = `Rp ${item.price.toFixed(2)}`; // Harga
                 subtotal += item.price; // Accumulate subtotal
             });
 
@@ -324,9 +149,28 @@
             document.getElementById('notaModal').style.display = 'none';
         }
 
-        function saveNota() {
-            // Function to download nota as PDF or image
-            alert("Fitur download nota belum tersedia.");
+        function downloadNota() {
+            html2canvas(document.getElementById('notaContent')).then(function(canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'nota.png';
+                link.click();
+            });
+        }
+
+        function downloadQRCode() {
+            const qrCode = document.getElementById('qr-code').querySelector('img');
+            if (!qrCode) {
+                alert("QR Code belum dibuat.");
+                return;
+            }
+
+            html2canvas(qrCode).then(function(canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'qr_code.png';
+                link.click();
+            });
         }
 
         updateCart(); // Call to update the cart display on load
