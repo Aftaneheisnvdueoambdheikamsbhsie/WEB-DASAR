@@ -1,79 +1,79 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const cartItems = document.getElementById('cart-items');
-    const totalAmount = document.getElementById('total-amount');
-    const showReceiptBtn = document.getElementById('show-receipt-btn');
-    const receiptModal = document.getElementById('receipt-modal');
-    const closeModal = document.getElementById('close-modal');
-    const customerNameInput = document.getElementById('customer-name');
-    const customerAddressInput = document.getElementById('customer-address');
-    const customerPhoneInput = document.getElementById('customer-phone');
-    const notaTotal = document.getElementById('nota-total');
-    const notaItems = document.getElementById('nota-items');
-    const generateQrBtn = document.getElementById('generate-qr-btn');
-    const downloadReceiptBtn = document.getElementById('download-receipt-btn');
-    const downloadQrBtn = document.getElementById('download-qr-btn');
-    const qrDisplay = document.getElementById('qr-display');
+const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-    // Contoh fungsi untuk menambahkan item ke keranjang
-    function addToCart(menuItem, price, quantity) {
-        const total = parseInt(totalAmount.innerText) || 0;
+// Fungsi untuk memperbarui total harga di keranjang
+function updateCartDisplay() {
+    const cartBody = document.getElementById('cart-body');
+    cartBody.innerHTML = ''; // Kosongkan isi sebelumnya
+    let total = 0;
 
-        // Membuat baris baru untuk keranjang
+    cart.forEach(item => {
         const row = document.createElement('tr');
+        const totalPrice = item.price * item.quantity;
+        total += totalPrice;
+
         row.innerHTML = `
-            <td>${menuItem}</td>
-            <td>${price}</td>
-            <td>${quantity}</td>
-            <td>${price * quantity}</td>
+            <td>${item.item}</td>
+            <td>Rp ${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>Rp ${totalPrice}</td>
         `;
-        cartItems.appendChild(row);
+        cartBody.appendChild(row);
+    });
 
-        // Memperbarui total amount
-        totalAmount.innerText = total + (price * quantity);
+    document.getElementById('total').textContent = `Rp ${total}`;
+    
+    // Menampilkan tombol generate jika ada item di keranjang
+    const generateQRButton = document.getElementById('generate-qr');
+    const generateReceiptButton = document.getElementById('generate-receipt');
+    if (cart.length > 0) {
+        generateQRButton.style.display = 'inline-block';
+        generateReceiptButton.style.display = 'inline-block';
     }
+}
 
-    // Contoh: Simulasikan menambahkan item menu ke keranjang
-    addToCart("Ayam Penyet", 30000, 2); // Menambahkan item menu dengan nama, harga, dan kuantitas
+// Menghasilkan QR code
+function generateQRCode() {
+    const total = document.getElementById('total').textContent.replace('Rp ', '');
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=Total%20Pembayaran%3A%20Rp%20${total}&size=150x150`;
+    const qrCodeImg = document.getElementById('qr-code');
+    qrCodeImg.src = qrCodeUrl;
+    
+    document.getElementById('qr-container').style.display = 'block';
+    document.getElementById('download-qr').href = qrCodeUrl;
+    document.getElementById('download-qr').download = 'qr_code.png';
+    document.getElementById('download-qr').style.display = 'inline-block';
+}
 
-    showReceiptBtn.addEventListener('click', () => {
-        const rows = cartItems.querySelectorAll('tr');
-        notaItems.innerHTML = '';
-        rows.forEach(row => {
-            notaItems.appendChild(row.cloneNode(true));
-        });
-        notaTotal.innerText = totalAmount.innerText;
-        receiptModal.style.display = 'block';
+// Menghasilkan nota
+function generateReceipt() {
+    let receiptText = 'Nota Belanja:\n\n';
+    cart.forEach(item => {
+        const totalPrice = item.price * item.quantity;
+        receiptText += `${item.item} - Rp ${item.price} x ${item.quantity} = Rp ${totalPrice}\n`;
     });
+    receiptText += `\nTotal: Rp ${document.getElementById('total').textContent.replace('Rp ', '')}`;
+    
+    document.getElementById('receipt').textContent = receiptText;
+    document.getElementById('receipt-container').style.display = 'block';
+    document.getElementById('download-receipt').href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(receiptText);
+    document.getElementById('download-receipt').download = 'nota.txt';
+    document.getElementById('download-receipt').style.display = 'inline-block';
+}
 
-    closeModal.addEventListener('click', () => {
-        receiptModal.style.display = 'none';
-    });
-
-    generateQrBtn.addEventListener('click', () => {
-        const total = totalAmount.innerText;
-        const qrCode = document.createElement('img');
-        qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?data=Total%20Pembayaran%3A%20${total}&size=200x200`;
-        qrDisplay.innerHTML = '';
-        qrDisplay.appendChild(qrCode);
-        qrDisplay.style.display = 'block';
-    });
-
-    downloadReceiptBtn.addEventListener('click', () => {
-        html2canvas(document.querySelector("#receipt-modal")).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'nota.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        });
-    });
-
-    downloadQrBtn.addEventListener('click', () => {
-        const qrCodeImg = qrDisplay.querySelector('img');
-        if (qrCodeImg) {
-            const link = document.createElement('a');
-            link.download = 'qr_code.png';
-            link.href = qrCodeImg.src;
-            link.click();
-        }
-    });
+// Menyimpan informasi pelanggan dan mengupdate tampilan keranjang
+document.getElementById('customerForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Mencegah refresh halaman
+    const customerName = document.getElementById('customerName').value;
+    const customerPhone = document.getElementById('customerPhone').value;
+    const customerAddress = document.getElementById('customerAddress').value;
+    
+    alert(`Informasi Pelanggan Disimpan:\nNama: ${customerName}\nTelepon: ${customerPhone}\nAlamat: ${customerAddress}`);
 });
+
+// Menampilkan daftar item ketika halaman dimuat
+window.onload = function() {
+    updateCartDisplay();
+
+    document.getElementById('generate-qr').addEventListener('click', generateQRCode);
+    document.getElementById('generate-receipt').addEventListener('click', generateReceipt);
+};
