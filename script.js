@@ -11,6 +11,22 @@ document.getElementById('show-receipt-btn').addEventListener('click', function()
     document.getElementById('customer-address').innerText = customerAddress;
     document.getElementById('customer-phone').innerText = customerPhone;
 
+    // Populate nota items
+    const cartItems = document.getElementById('cart-items').children;
+    const notaItems = document.getElementById('nota-items');
+    notaItems.innerHTML = ''; // Clear previous items
+
+    for (let item of cartItems) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.children[0].innerText}</td>
+            <td>${item.children[1].innerText}</td>
+            <td>${item.children[2].innerText}</td>
+            <td>${item.children[3].innerText}</td>
+        `;
+        notaItems.appendChild(row);
+    }
+
     // Show the receipt modal
     document.getElementById('receipt-modal').style.display = 'block';
 });
