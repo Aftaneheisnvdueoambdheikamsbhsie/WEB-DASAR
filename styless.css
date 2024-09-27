@@ -37,6 +37,7 @@ nav ul li a {
     color: white;
     text-decoration: none;
 }
+
 h1, h2, h3 {
     font-size: 2em;
 }
@@ -46,6 +47,7 @@ p {
     line-height: 1.6;
     text-align:center;
 }
+
 #menu {
     padding: 50px;
     text-align: center;
@@ -53,7 +55,7 @@ p {
 
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Atur kolom fleksibel */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     margin-top: 20px;
 }
@@ -72,32 +74,38 @@ p {
 
 .menu-item img {
     max-width: 100%;
-    height:auto;
+    height: auto;
     border-radius: 8px;
-    margin-button:auto;
+    margin-bottom: auto;
 }
+
 #contact {
     padding: 20px;
     background-color: #f0f0f0;
     text-align: center;
 }
+
 .logo-large {
     max-width: 150px;
     height: auto;
     margin: 20px 0;
 }
+
 .food-services {
     list-style: none;
     padding: 0;
 }
+
 .food-services li {
     display: inline-block;
     margin: 0 10px;
 }
+
 .logo-small {
     width: 80px;
     height: auto;
 }
+
 #partners {
     padding: 20px;
     background-color: #ffffff;
@@ -118,69 +126,72 @@ p {
     text-align: center;
     transition: transform 0.3s ease;
 }
+
 .partner-item:hover {
     transform: scale(1.05);
     background-color: #f1f1f1;
 }
+
 .partner-logo {
-max-width: 100px;
-height: auto;
+    max-width: 100px;
+    height: auto;
 }
+
 .quantity-selector {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
 }
 
 .quantity-selector button {
-padding: 5px 10px;
-font-size: 0.8em;
-margin: 0 5px;
-background-color: #ff6347;
-color: white;
-border: none;
-cursor: pointer;
- border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    margin: 0 5px;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 .quantity {
-width: 40px;
-text-align: center;
+    width: 40px;
+    text-align: center;
 }
 
 #qr-code {
-margin-top: 20px;
-text-align: center;
+    margin-top: 20px;
+    text-align: center;
 }
 
-       /* Modal and Layout Styles */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000; /* Pastikan modal berada di atas elemen lainnya */
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Transparansi latar belakang modal */
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
-    background-color: #ffffff; /* Pastikan konten modal memiliki latar belakang solid */
+    background-color: #ffffff;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 90%;
     max-width: 500px;
     font-family: Arial, sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Tambah bayangan untuk lebih jelas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-/* Nota Layout */
+
 .nota-header {
     text-align: center;
 }
@@ -194,7 +205,7 @@ text-align: center;
     border-top: 1px solid #000;
     border-bottom: 1px solid #000;
     padding: 10px 0;
-    background-color: #ffffff; /* Tambahkan latar belakang solid pada bagian nota */
+    background-color: #ffffff;
 }
 
 .nota-item {
@@ -215,7 +226,6 @@ text-align: center;
     text-align: right;
 }
 
-/* Style for Buttons */
 .button-small {
     padding: 10px 15px;
     font-size: 14px;
@@ -224,6 +234,7 @@ text-align: center;
     border: none;
     border-radius: 5px;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .button-small:hover {
@@ -237,18 +248,18 @@ text-align: center;
 .nota-info {
     text-align: left;
     padding: 5px 0;
-    background-color: #ffffff; /* Pastikan bagian ini juga memiliki latar belakang solid */
+    background-color: #ffffff;
 }
 
 .nota-info div {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #000; /* Tambahkan border untuk memisahkan bagian */
+    border-bottom: 1px solid #000;
     padding-bottom: 5px;
 }
 
 .nota-info div:last-child {
-    border-bottom: none; /* Hapus border untuk item terakhir */
+    border-bottom: none;
 }
 
 .nota-info strong {
