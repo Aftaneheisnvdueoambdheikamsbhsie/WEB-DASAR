@@ -3,177 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <title>Keranjang Belanja</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <header>
-        <h1><img class="small-logo" src="dokterbg.png" alt="Logo">Keranjang Belanja</h1>
+        <h1>Keranjang Belanja</h1>
     </header>
-
-    <div id="menu">
-        <div class="menu-grid" id="cart-items">
-            <!-- Cart items will be dynamically inserted here -->
+    
+    <main>
+        <div id="cart">
+            <h2>Daftar Menu</h2>
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th>Menu</th>
+                        <th>Harga</th>
+                        <th>Kuantitas</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    <!-- Cart items will be dynamically populated here -->
+                </tbody>
+            </table>
+            <div class="total-container">
+                <h3>Total Pembayaran: <span id="total-amount">0</span></h3>
+            </div>
+            <button class="button-small" id="show-receipt-btn">Show Nota</button>
         </div>
-        <div id="total-price">Total: Rp 0</div>
-    </div>
-
-    <div id="customer-info">
-        <h2>Informasi Pelanggan</h2>
-        <input type="text" id="customerName" placeholder="Nama Pelanggan" required>
-        <input type="text" id="customerPhone" placeholder="Nomor Telepon" required>
-        <button id="generateQRCode" class="button-small">Generate QR Code</button>
-        <div id="qr-code"></div>
-    </div>
-
-    <button id="showNotaButton" class="button-small">Show Nota</button>
-
-    <!-- Nota Modal -->
-    <div class="modal" id="notaModal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div class="nota-header">
-                <h2>Nota Pembelian</h2>
-                <img src="logo.png" alt="Logo">
-            </div>
-            <div class="nota-section" id="notaContent">
-                <div class="nota-info">
-                    <div><strong>Nama Pelanggan:</strong> <span id="notaCustomer"></span></div>
-                    <div><strong>Tanggal Pesanan:</strong> <span id="notaOrderDate"></span></div>
-                    <div><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></div>
-                </div>
-                <table id="notaTable">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Menu</th>
-                            <th>Harga</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <div class="nota-summary">
-                    <div><strong>Subtotal:</strong> <span id="notaSubTotal"></span></div>
-                    <div><strong>Pajak:</strong> <span id="notaTax"></span></div>
-                    <div><strong>Pem rounding:</strong> <span id="notaRounding"></span></div>
-                    <div><strong>Total:</strong> <span id="notaTotal"></span></div>
-                </div>
-            </div>
-            <div class="nota-footer">
-                <button id="downloadNota" class="button-small" onclick="downloadNota()">Download Nota</button>
-                <button id="downloadQR" class="button-small" onclick="downloadQRCode()">Download QR Code</button>
-            </div>
+        
+        <div id="qr-code">
+            <h2>Generate QR Code</h2>
+            <button id="generate-qr-btn" class="button-small">Generate QR</button>
+            <div id="qr-display" style="display: none;"></div>
         </div>
-    </div>
+    </main>
 
     <footer>
         <p>&copy; 2024 Ayam Penyet Cobek</p>
     </footer>
 
-    <script>
-        function updateCart() {
-            const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
-            const cartContainer = document.getElementById('cart-items');
-            cartContainer.innerHTML = ''; // Clear previous items
+    <!-- Modal for receipt -->
+    <div class="modal" id="receipt-modal">
+        <div class="modal-content">
+            <span class="close" id="close-modal">&times;</span>
+            <h2>Nota Pembayaran</h2>
+            <div class="nota-section">
+                <div class="nota-info">
+                    <strong>Nama Pelanggan:</strong>
+                    <span id="customer-name"></span>
+                </div>
+                <div class="nota-info">
+                    <strong>Alamat:</strong>
+                    <span id="customer-address"></span>
+                </div>
+                <div class="nota-info">
+                    <strong>Nomor Telepon:</strong>
+                    <span id="customer-phone"></span>
+                </div>
+                <hr>
+                <div class="nota-info">
+                    <strong>Total Pembayaran:</strong>
+                    <span id="nota-total"></span>
+                </div>
+            </div>
+            <button id="download-receipt-btn" class="button-small">Download Nota</button>
+            <button id="download-qr-btn" class="button-small">Download QR</button>
+            <div id="qr-code-download" style="display: none;"></div>
+        </div>
+    </div>
 
-            let total = 0;
-            cartItems.forEach((item, index) => {
-                const row = document.createElement('div');
-                row.classList.add('menu-item');
-                row.innerHTML = `
-                    <p>${item.item}</p>
-                    <p>Rp ${item.price.toFixed(2)}</p>
-                    <p>Qty: ${item.qty}</p>
-                    <p>Total: Rp ${(item.price * item.qty).toFixed(2)}</p>
-                `;
-                cartContainer.appendChild(row);
-                total += item.price * item.qty;
-            });
-
-            document.getElementById('total-price').textContent = `Total: Rp ${total.toFixed(2)}`;
-        }
-
-        function generateQRCode() {
-            const customerName = document.getElementById('customerName').value;
-            const customerPhone = document.getElementById('customerPhone').value;
-
-            if (!customerName || !customerPhone) {
-                alert("Silakan isi semua informasi pelanggan.");
-                return;
-            }
-
-            const qrCodeContainer = document.getElementById('qr-code');
-            qrCodeContainer.innerHTML = ""; // Clear previous QR Code
-
-            const qrCode = new QRCode(qrCodeContainer, {
-                text: `Nama: ${customerName}\nHP: ${customerPhone}\nTotal: Rp ${document.getElementById('total-price').textContent}`,
-                width: 128,
-                height: 128,
-            });
-        }
-
-        document.getElementById('showNotaButton').addEventListener('click', function() {
-            document.getElementById('notaCustomer').textContent = document.getElementById('customerName').value;
-            document.getElementById('notaOrderDate').textContent = new Date().toLocaleString();
-            document.getElementById('notaTransactionCode').textContent = Math.random().toString(36).substring(2, 15).toUpperCase();
-
-            const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-            notaTable.innerHTML = ''; // Clear previous nota details
-
-            const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
-            let subtotal = 0;
-            cartItems.forEach((item, index) => {
-                const row = notaTable.insertRow();
-                row.insertCell(0).textContent = index + 1; // No
-                row.insertCell(1).textContent = item.item; // Menu
-                row.insertCell(2).textContent = `Rp ${item.price.toFixed(2)}`; // Harga
-                subtotal += item.price; // Accumulate subtotal
-            });
-
-            document.getElementById('notaSubTotal').textContent = `Rp ${subtotal.toFixed(2)}`;
-            const tax = subtotal * 0.1; // Example tax of 10%
-            const rounding = (subtotal + tax) % 100; // Rounding to nearest hundred
-            const total = subtotal + tax + rounding;
-
-            document.getElementById('notaTax').textContent = `Rp ${tax.toFixed(2)}`;
-            document.getElementById('notaRounding').textContent = `Rp ${rounding.toFixed(2)}`;
-            document.getElementById('notaTotal').textContent = `Rp ${total.toFixed(2)}`;
-
-            document.getElementById('notaModal').style.display = 'block';
-        });
-
-        function closeModal() {
-            document.getElementById('notaModal').style.display = 'none';
-        }
-
-        function downloadNota() {
-            html2canvas(document.getElementById('notaContent')).then(function(canvas) {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = 'nota.png';
-                link.click();
-            });
-        }
-
-        function downloadQRCode() {
-            const qrCode = document.getElementById('qr-code').querySelector('img');
-            if (!qrCode) {
-                alert("QR Code belum dibuat.");
-                return;
-            }
-
-            html2canvas(qrCode).then(function(canvas) {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = 'qr_code.png';
-                link.click();
-            });
-        }
-
-        updateCart(); // Call to update the cart display on load
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
