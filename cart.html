@@ -350,7 +350,6 @@
 
         function saveNota() {
             // Convert nota to image or download as PDF here
-            alert('Download Nota functionality coming soon!');
             const notaElement = document.getElementById('notaContent');
             
             html2canvas(notaElement).then(function(canvas) {
@@ -359,6 +358,7 @@
                 link.download = 'nota.png';  // Menetapkan nama file yang diunduh
                 link.click();
             });
+            alert('Download Nota functionality coming soon!');
         }
 
         function generateQRCode() {
