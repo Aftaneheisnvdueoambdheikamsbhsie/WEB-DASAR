@@ -1,67 +1,79 @@
-document.getElementById('show-receipt-btn').addEventListener('click', function() {
-    // Gather customer information and total
-    const total = document.getElementById('total-amount').innerText;
-    const customerName = prompt("Masukkan Nama Pelanggan:");
-    const customerAddress = prompt("Masukkan Alamat Pelanggan:");
-    const customerPhone = prompt("Masukkan Nomor Telepon Pelanggan:");
-
-    // Populate the receipt modal
-    document.getElementById('nota-total').innerText = total;
-    document.getElementById('customer-name').innerText = customerName;
-    document.getElementById('customer-address').innerText = customerAddress;
-    document.getElementById('customer-phone').innerText = customerPhone;
-
-    // Populate nota items
-    const cartItems = document.getElementById('cart-items').children;
+document.addEventListener('DOMContentLoaded', () => {
+    const cartItems = document.getElementById('cart-items');
+    const totalAmount = document.getElementById('total-amount');
+    const showReceiptBtn = document.getElementById('show-receipt-btn');
+    const receiptModal = document.getElementById('receipt-modal');
+    const closeModal = document.getElementById('close-modal');
+    const customerNameInput = document.getElementById('customer-name');
+    const customerAddressInput = document.getElementById('customer-address');
+    const customerPhoneInput = document.getElementById('customer-phone');
+    const notaTotal = document.getElementById('nota-total');
     const notaItems = document.getElementById('nota-items');
-    notaItems.innerHTML = ''; // Clear previous items
+    const generateQrBtn = document.getElementById('generate-qr-btn');
+    const downloadReceiptBtn = document.getElementById('download-receipt-btn');
+    const downloadQrBtn = document.getElementById('download-qr-btn');
+    const qrDisplay = document.getElementById('qr-display');
 
-    for (let item of cartItems) {
+    // Contoh fungsi untuk menambahkan item ke keranjang
+    function addToCart(menuItem, price, quantity) {
+        const total = parseInt(totalAmount.innerText) || 0;
+
+        // Membuat baris baru untuk keranjang
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${item.children[0].innerText}</td>
-            <td>${item.children[1].innerText}</td>
-            <td>${item.children[2].innerText}</td>
-            <td>${item.children[3].innerText}</td>
+            <td>${menuItem}</td>
+            <td>${price}</td>
+            <td>${quantity}</td>
+            <td>${price * quantity}</td>
         `;
-        notaItems.appendChild(row);
+        cartItems.appendChild(row);
+
+        // Memperbarui total amount
+        totalAmount.innerText = total + (price * quantity);
     }
 
-    // Show the receipt modal
-    document.getElementById('receipt-modal').style.display = 'block';
-});
+    // Contoh: Simulasikan menambahkan item menu ke keranjang
+    addToCart("Ayam Penyet", 30000, 2); // Menambahkan item menu dengan nama, harga, dan kuantitas
 
-// Close modal
-document.getElementById('close-modal').addEventListener('click', function() {
-    document.getElementById('receipt-modal').style.display = 'none';
-});
-
-// Download receipt as image
-document.getElementById('download-receipt-btn').addEventListener('click', function() {
-    html2canvas(document.querySelector('.modal-content')).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'nota_pembayaran.png';
-        link.href = canvas.toDataURL();
-        link.click();
+    showReceiptBtn.addEventListener('click', () => {
+        const rows = cartItems.querySelectorAll('tr');
+        notaItems.innerHTML = '';
+        rows.forEach(row => {
+            notaItems.appendChild(row.cloneNode(true));
+        });
+        notaTotal.innerText = totalAmount.innerText;
+        receiptModal.style.display = 'block';
     });
-});
 
-// Download QR code (assuming you have generated a QR code and added it to #qr-display)
-document.getElementById('download-qr-btn').addEventListener('click', function() {
-    const qrCode = document.getElementById('qr-display').firstChild; // Assuming the QR code is the first child
-    const link = document.createElement('a');
-    link.download = 'qr_code.png';
-    link.href = qrCode.src;
-    link.click();
-});
+    closeModal.addEventListener('click', () => {
+        receiptModal.style.display = 'none';
+    });
 
-// Example QR code generation (add your QR code generation logic here)
-document.getElementById('generate-qr-btn').addEventListener('click', function() {
-    // Replace this with actual QR code generation logic
-    const qrDisplay = document.getElementById('qr-display');
-    qrDisplay.innerHTML = ''; // Clear previous QR code
-    const qrCodeImg = document.createElement('img');
-    qrCodeImg.src = 'https://api.qrserver.com/v1/create-qr-code/?data=YourDataHere'; // Replace with your data
-    qrDisplay.appendChild(qrCodeImg);
-    qrDisplay.style.display = 'block';
+    generateQrBtn.addEventListener('click', () => {
+        const total = totalAmount.innerText;
+        const qrCode = document.createElement('img');
+        qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?data=Total%20Pembayaran%3A%20${total}&size=200x200`;
+        qrDisplay.innerHTML = '';
+        qrDisplay.appendChild(qrCode);
+        qrDisplay.style.display = 'block';
+    });
+
+    downloadReceiptBtn.addEventListener('click', () => {
+        html2canvas(document.querySelector("#receipt-modal")).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'nota.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    });
+
+    downloadQrBtn.addEventListener('click', () => {
+        const qrCodeImg = qrDisplay.querySelector('img');
+        if (qrCodeImg) {
+            const link = document.createElement('a');
+            link.download = 'qr_code.png';
+            link.href = qrCodeImg.src;
+            link.click();
+        }
+    });
 });
