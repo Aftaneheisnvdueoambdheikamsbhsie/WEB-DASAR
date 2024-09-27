@@ -310,33 +310,361 @@
                 row.insertCell(0).textContent = 1; // Assuming 1 item for simplicity
                 row.insertCell(1).textContent = item.item;
                 row.insertCell(2).textContent = `Rp ${item.price.toFixed(2)}`;
-                subtotal += item.price; // Accumulate subtotal
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
+    <link rel="stylesheet" href="styless.css">
+
+    <!-- CDN jQuery and QR Code Plugin -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #e63946;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header img {
+            width: 80px;
+        }
+        p {
+            text-align: justify;
+            margin: 5px;
+            padding: 3px;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        section {
+            padding: 20px;
+            background-color: white;
+            margin: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #e63946;
+            color: white;
+        }
+        .buttons {
+            text-align: center;
+        }
+        .button-small {
+            background-color: #e63946;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button-small:hover {
+            background-color: #d62839;
+        }
+        .customer-info {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .customer-info label {
+            margin-bottom: 5px;
+        }
+        .customer-info input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .qr-barcode {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .nota-header img {
+            width: 80px;
+        }
+        .nota-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .nota-details th, .nota-details td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .nota-details th {
+            background-color: #e63946;
+            color: white;
+        }
+        .nota-totals {
+            margin-top: 20px;
+        }
+        .nota-totals p {
+            margin: 5px 0;
+        }
+        .separator {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="dokterbg.png" alt="Logo" class="small-logo">
+        <h1>Ayam Penyet Cobek-19</h1>
+        <nav>
+            <ul>
+                <li><a href="MENU.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="cart.html">Keranjang</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="cart">
+        <h2>Keranjang Belanja</h2>
+        <table id="cart-items">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h3 id="total-price">Total: Rp 0</h3>
+
+        <!-- Input Manual Pelanggan -->
+        <div class="customer-info">
+            <label for="customerName">Nama Pelanggan:</label>
+            <input type="text" id="customerName" placeholder="Masukkan Nama" required>
+
+            <label for="customerPhone">Nomor HP:</label>
+            <input type="text" id="customerPhone" placeholder="Masukkan No HP" required>
+        </div>
+
+        <div class="buttons">
+            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
+            <button class="button-small" id="showNotaButton">Show Nota</button>
+        </div>
+
+        <div class="qr-barcode" id="qr-code-container">
+            <div id="qr-code"></div>
+            <a id="qr-download-link" href="#" download="qrcode.png">Download QR Code</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
+    </footer>
+
+    <!-- Modal untuk menampilkan nota sebelum disimpan -->
+    <div id="notaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            
+            <div class="nota-header">
+                <img src="dokterbg.png" alt="Logo" class="small-logo">
+                <h2>Ayam Penyet Cobek-19</h2>
+                <p>Jl. Akses UI No.82, Tugu, Depok</p>
+            </div>
+
+            <div class="nota-info">
+                <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
+                <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
+                <p><strong>Tipe Order:</strong> <span id="notaOrderType"></span></p>
+                <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
+                <p><strong>Status Pembayaran:</strong> <span id="notaPaymentStatus"></span></p>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="nota-details">
+                <table id="notaTable">
+                    <thead>
+                        <tr>
+                            <th>Jumlah</th>
+                            <th>Menu</th>
+                            <th>Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="nota-totals">
+                <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
+                <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
+                <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
+                <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
+            </div>
+
+            <div class="buttons" style="text-align: center;">
+                <button class="button-small" onclick="saveNota()">Download Nota</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            const groupedCart = cart.reduce((acc, item) => {
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                acc[item.item].qty += 1;
+                return acc;
+            }, {});
+
+            Object.values(groupedCart).forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.item}</td>
+                    <td>Rp ${item.price}</td>
+                    <td>${item.qty}</td>
+                    <td>Rp ${item.price * item.qty}</td>
+                `;
+                cartItems.appendChild(row);
+                total += item.price * item.qty;
             });
 
-            document.getElementById('notaSubTotal').textContent = `Rp ${subtotal.toFixed(2)}`;
-            const tax = subtotal * 0.1; // Example tax of 10%
-            const rounding = (subtotal + tax) % 100; // Rounding to nearest hundred
-            const total = subtotal + tax + rounding;
+            document.getElementById('total-price').textContent = `Total: Rp ${total}`;
+        }
 
-            document.getElementById('notaTax').textContent = `Rp ${tax.toFixed(2)}`;
-            document.getElementById('notaRounding').textContent = `Rp ${rounding.toFixed(2)}`;
-            document.getElementById('notaTotal').textContent = `Rp ${total.toFixed(2)}`;
+        updateCart();
 
-            document.getElementById('notaModal').style.display = 'block';
-        });
+        function generateQRCode() {
+            const customerName = document.getElementById('customerName').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+
+            if (!customerName || !customerPhone) {
+                alert('Please enter customer details!');
+                return;
+            }
+
+            const qrCodeContainer = document.getElementById('qr-code');
+            qrCodeContainer.innerHTML = '';
+            const qrCode = new QRCode(qrCodeContainer, {
+                text: `${customerName},${customerPhone}`,
+                width: 128,
+                height: 128
+            });
+
+            const qrCanvas = qrCodeContainer.querySelector('canvas');
+            const qrDownloadLink = document.getElementById('qr-download-link');
+            qrDownloadLink.href = qrCanvas.toDataURL('image/png');
+        }
+
+        function showNota() {
+            const modal = document.getElementById('notaModal');
+            modal.style.display = 'block';
+
+            const notaCustomer = document.getElementById('customerName').value;
+            const notaOrderDate = new Date().toLocaleDateString();
+            const notaOrderType = 'Dine-In';
+            const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();
+            const notaPaymentStatus = 'Pending';
+
+            document.getElementById('notaCustomer').textContent = notaCustomer;
+            document.getElementById('notaOrderDate').textContent = notaOrderDate;
+            document.getElementById('notaOrderType').textContent = notaOrderType;
+            document.getElementById('notaTransactionCode').textContent = notaTransactionCode;
+            document.getElementById('notaPaymentStatus').textContent = notaPaymentStatus;
+
+            const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
+            notaTable.innerHTML = '';
+            let notaSubTotal = 0;
+
+            cart.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.qty}</td>
+                    <td>${item.item}</td>
+                    <td>Rp ${item.price}</td>
+                `;
+                notaTable.appendChild(row);
+                notaSubTotal += item.price * item.qty;
+            });
+
+            const notaTax = notaSubTotal * 0.1;
+            const notaRounding = Math.ceil(notaSubTotal + notaTax);
+            const notaTotal = notaSubTotal + notaTax;
+
+            document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
+            document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
+            document.getElementById('notaRounding').textContent = `Rp ${notaRounding}`;
+            document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
+        }
+
+        document.getElementById('showNotaButton').addEventListener('click', showNota);
 
         function closeModal() {
             document.getElementById('notaModal').style.display = 'none';
         }
 
         function saveNota() {
-            // Function to download nota as PDF or image
-            alert("Fitur download nota belum tersedia.");
+            // Convert nota to image or download as PDF here
+            alert('Download Nota functionality coming soon!');
         }
-
-        updateCart(); // Call to update the cart display on load
     </script>
 </body>
 </html>
 
-               
