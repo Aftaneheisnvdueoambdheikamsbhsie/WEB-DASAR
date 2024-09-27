@@ -209,33 +209,233 @@
     }
 
     // Simpan QR Code sebagai gambar
-    function saveQRCode() {
-        const qrCodeContainer = document.getElementById('qr-code').getElementsByTagName('canvas')[0];
-        if (qrCodeContainer) {
-            const link = document.createElement('a');
-            link.href = qrCodeContainer.toDataURL();
-            link.download = 'qr-code-ayam-penyet-cobek19.png';
-            link.click();
-        } else {
-            alert('QR code belum di-generate. Harap generate QR code terlebih dahulu.');
-        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
+    <link rel="stylesheet" href="styless.css">
+
+    <!-- CDN jQuery and QR Code Plugin -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <img src="dokterbg.png" alt="Logo" class="small-logo">
+        <h1>Ayam Penyet Cobek-19</h1>
+        <nav>
+            <ul>
+                <li><a href="MENU.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="cart.html">Keranjang</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="cart">
+        <h2>Items in Your Cart</h2>
+        <table id="cart-items" border="0">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h3 id="total-price">Total: Rp 0</h3>
+
+        <!-- Input Manual Pelanggan -->
+        <div class="customer-info">
+            <label for="customerName">Nama Pelanggan:</label>
+            <input type="text" id="customerName" placeholder="Masukkan Nama">
+
+            <label for="customerPhone">Nomor HP:</label>
+            <input type="text" id="customerPhone" placeholder="Masukkan No HP">
+        </div>
+
+        <div class="buttons">
+            <!-- Generate QR Code Button -->
+            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
+            
+            <!-- Save Nota Button -->
+            <button class="button-small" id="showNotaButton">Show Nota</button>
+        </div>
+
+        <div class="qr-barcode">
+            <div id="qr-code"></div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
+    </footer>
+
+<!-- Modal untuk menampilkan nota sebelum disimpan -->
+<div id="notaModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        
+        <!-- Header Nota dengan Logo dan Informasi Gerai -->
+        <div class="nota-header">
+            <img src="dokterbg.png" alt="Logo" class="small-logo">
+            <h2>Ayam Penyet Cobek-19</h2>
+            <p>Jl. Akses UI No.82, Tugu, Depok</p>
+        </div>
+
+        <!-- Informasi Transaksi dan Pesanan -->
+        <div class="nota-info">
+            <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
+            <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
+            <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
+        </div>
+
+        <!-- Tabel Detail Pesanan -->
+        <div class="nota-details">
+            <table id="notaTable" border="0">
+                <thead>
+                    <tr>
+                        <th>Jumlah</th>
+                        <th>Menu</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Item Pesanan akan dimasukkan secara dinamis di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Informasi Total -->
+        <div class="nota-totals">
+            <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
+            <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
+            <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
+        </div>
+
+        <!-- Tombol Download Nota -->
+        <div class="buttons" style="text-align: center;">
+            <button class="button-small" onclick="saveNota()">Download Nota</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+    // Update Cart Table
+    function updateCart() {
+        const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
+        cartItems.innerHTML = '';
+        let total = 0;
+
+        const groupedCart = cart.reduce((acc, item) => {
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+            acc[item.item].qty += 1;
+            return acc;
+        }, {});
+
+        Object.values(groupedCart).forEach((item) => {
+            const row = cartItems.insertRow();
+            row.insertCell(0).textContent = item.item;
+            row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
+            row.insertCell(2).textContent = item.qty;
+            row.insertCell(3).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
+            total += item.price * item.qty;
+        });
+
+        document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
     }
 
-    // Fungsi untuk menyembunyikan nota dan reset form pelanggan setelah selesai
-    function resetCart() {
-        sessionStorage.removeItem('cart');
-        window.location.reload();
+    // Validasi input pelanggan sebelum menampilkan nota
+    function validateCustomerInfo() {
+        const customerName = document.getElementById('customerName').value;
+        const customerPhone = document.getElementById('customerPhone').value;
+
+        if (customerName.trim() === '' || customerPhone.trim() === '') {
+            alert('Harap masukkan nama dan nomor HP pelanggan sebelum melanjutkan.');
+            return false;
+        }
+
+        return true;
     }
 
-    // Fungsi untuk mengatur event 'Close' dan 'Reset' setelah pesanan selesai
-    document.querySelector('.close').addEventListener('click', closeModal);
-    document.querySelector('.modal').addEventListener('click', function(event) {
-        if (event.target === this) {
-            closeModal();
-        }
+    // Generate QR Code Function
+    function generateQRCode() {
+        const qrCodeContainer = document.getElementById('qr-code');
+        qrCodeContainer.innerHTML = ''; // Clear previous QR code
+
+        const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + 
+                       cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
+
+        // Use QRCode.js to generate the QR code
+        const qrCode = new QRCode(qrCodeContainer, {
+            text: qrData,
+            width: 128,
+            height: 128
+        });
+
+        qrCodeContainer.style.display = 'inline-block';
+    }
+
+    // Show Nota Modal
+    document.getElementById('showNotaButton').addEventListener('click', () => {
+        if (!validateCustomerInfo()) return; // Cek validasi input pelanggan
+
+        const customerName = document.getElementById('customerName').value;
+        const customerPhone = document.getElementById('customerPhone').value;
+
+        // Generate random transaction code and payment status
+        const transactionCode = 'TRX-' + Math.floor(Math.random() * 1000000);
+        const now = new Date();
+        const orderDate = now.toLocaleDateString('id-ID');
+
+        document.getElementById('notaCustomer').textContent = `${customerName} (${customerPhone})`;
+        document.getElementById('notaOrderDate').textContent = orderDate;
+        document.getElementById('notaTransactionCode').textContent = transactionCode;
+
+        const groupedCart = cart.reduce((acc, item) => {
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+            acc[item.item].qty += 1;
+            return acc;
+        }, {});
+
+        const notaTableBody = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
+        notaTableBody.innerHTML = '';
+
+        let subTotal = 0;
+        Object.values(groupedCart).forEach((item) => {
+            const row = notaTableBody.insertRow();
+            row.insertCell(0).textContent = item.qty;
+            row.insertCell(1).textContent = item.item;
+            row.insertCell(2).textContent = 'Rp ' + item.price.toLocaleString();
+            subTotal += item.price * item.qty;
+        });
+
+        const tax = subTotal * 0.1; // Pajak 10%
+        const total = subTotal + tax;
+
+        document.getElementById('notaSubTotal').textContent = 'Rp ' + subTotal.toLocaleString();
+        document.getElementById('notaTax').textContent = 'Rp ' + tax.toLocaleString();
+        document.getElementById('notaTotal').textContent = 'Rp ' + total.toLocaleString();
+
+        document.getElementById('notaModal').style.display = 'block';
     });
+
+    // Close Modal
+    function closeModal() {
+        document.getElementById('notaModal').style.display = 'none';
+    }
 
     window.onload = updateCart;
 </script>
 </body>
 </html>
+
