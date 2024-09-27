@@ -351,6 +351,38 @@
         function saveNota() {
             // Convert nota to image or download as PDF here
             alert('Download Nota functionality coming soon!');
+            const notaElement = document.getElementById('notaContent');
+            
+            html2canvas(notaElement).then(function(canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');  // Mengubah canvas menjadi gambar PNG
+                link.download = 'nota.png';  // Menetapkan nama file yang diunduh
+                link.click();
+            });
+        }
+
+        function generateQRCode() {
+            const customerName = document.getElementById('customerName').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+
+            if (!customerName || !customerPhone) {
+                alert('Please enter customer details!');
+                return;
+            }
+
+            const qrCodeContainer = document.getElementById('qr-code');
+            qrCodeContainer.innerHTML = '';
+            const qrCode = new QRCode(qrCodeContainer, {
+                text: `${customerName},${customerPhone}`,
+                width: 128,
+                height: 128
+            });
+
+            // Setelah QR Code dibuat, buat tautan unduh dari elemen canvas
+            const qrCanvas = qrCodeContainer.querySelector('canvas');
+            const qrDownloadLink = document.getElementById('qr-download-link');
+            qrDownloadLink.href = qrCanvas.toDataURL('image/png');  // Mengambil data QR dalam format gambar
+            qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file yang akan diunduh
         }
     </script>
 </body>
