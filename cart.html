@@ -3,88 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
-    <link rel="stylesheet" href="styless.css">
-
-    <!-- CDN jQuery and QR Code Plugin -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <title>Keranjang Belanja</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
 </head>
 <body>
-    <header>
-        <img src="dokterbg.png" alt="Logo" class="small-logo">
-        <h1>Ayam Penyet Cobek-19</h1>
-        <nav>
-            <ul>
-                <li><a href="MENU.html">Home</a></li>
-                <li><a href="menu.html">Menu</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="cart.html">Keranjang</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <section id="cart">
-        <h2>Items in Your Cart</h2>
-        <table id="cart-items" border="0">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <h3 id="total-price">Total: Rp 0</h3>
+<div id="cart">
+    <h1>Keranjang Belanja</h1>
+    <table id="cartTable">
+        <thead>
+            <tr>
+                <th>Menu</th>
+                <th>Harga</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="cartTableBody">
+            <!-- Cart items will be populated here -->
+        </tbody>
+    </table>
+    <button id="showNota">Show Nota</button>
+</div>
 
-        <!-- Input Manual Pelanggan -->
-        <div class="customer-info">
-            <label for="customerName">Nama Pelanggan:</label>
-            <input type="text" id="customerName" placeholder="Masukkan Nama">
-
-            <label for="customerPhone">Nomor HP:</label>
-            <input type="text" id="customerPhone" placeholder="Masukkan No HP">
-        </div>
-
-        <div class="buttons">
-            <!-- Generate QR Code Button -->
-            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
-            
-            <!-- Show Nota Button -->
-            <button class="button-small" id="showNotaButton">Show Nota</button>
-        </div>
-
-        <div class="qr-barcode">
-            <div id="qr-code"></div>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
-    </footer>
-
-<!-- Modal untuk menampilkan nota sebelum disimpan -->
 <div id="notaModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        
-        <div class="nota-header">
-            <img src="dokterbg.png" alt="Logo" class="small-logo">
-            <h2>Ayam Penyet Cobek-19</h2>
-            <p>Jl. Akses UI No.82, Tugu, Depok</p>
-        </div>
-
-        <div class="nota-info">
-            <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
-            <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
-            <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
-        </div>
-
-        <div class="nota-details">
-            <table id="notaTable" border="0">
+        <h2>Nota Pembayaran</h2>
+        <div>
+            <p>Nama Pelanggan: <span id="notaCustomer"></span></p>
+            <p>No. Telepon: <span id="notaPhone"></span></p>
+            <p>Tanggal: <span id="notaOrderDate"></span></p>
+            <p>Tipe Order: <span id="notaOrderType"></span></p>
+            <p>Kode Transaksi: <span id="notaTransactionCode"></span></p>
+            <p>Status Pembayaran: <span id="notaPaymentStatus"></span></p>
+            <hr>
+            <table id="notaTable">
                 <thead>
                     <tr>
                         <th>Jumlah</th>
@@ -92,331 +47,79 @@
                         <th>Harga</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    <!-- Nota items will be populated here -->
+                </tbody>
             </table>
-        </div>
-
-        <div class="nota-totals">
-            <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
-            <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
-            <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
-        </div>
-
-        <div class="buttons" style="text-align: center;">
-            <button class="button-small" onclick="saveNota()">Download Nota</button>
+            <hr>
+            <p>Subtotal: <span id="notaSubTotal"></span></p>
+            <p>Pajak: <span id="notaTax"></span></p>
+            <p>Rounding: <span id="notaRounding"></span></p>
+            <p>Total: <span id="notaTotal"></span></p>
+            <div id="qrCodeContainer">
+                <h3>QR Code Pembayaran</h3>
+                <div id="qrCode"></div>
+                <button onclick="downloadQr()">Download QR Code</button>
+            </div>
+            <button onclick="downloadNota()">Download Nota</button>
         </div>
     </div>
 </div>
 
 <script>
-    const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+    const cart = [
+        { item: 'Ayam Penyet', price: 25000 },
+        { item: 'Nasi Putih', price: 5000 }
+    ];
 
-    // Update Cart Table
     function updateCart() {
-        const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
-        cartItems.innerHTML = '';
-        let total = 0;
+        const cartTableBody = document.getElementById('cartTableBody');
+        cartTableBody.innerHTML = '';
 
-        const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-            acc[item.item].qty += 1;
-            return acc;
-        }, {});
-
-        Object.values(groupedCart).forEach((item) => {
-            const row = cartItems.insertRow();
+        cart.forEach((item, index) => {
+            const row = cartTableBody.insertRow();
             row.insertCell(0).textContent = item.item;
             row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
-            row.insertCell(2).textContent = item.qty;
-            row.insertCell(3).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
-            total += item.price * item.qty;
+            const removeCell = row.insertCell(2);
+            removeCell.innerHTML = `<button onclick="removeItem(${index})">Hapus</button>`;
         });
-
-        document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
     }
 
-    function validateCustomerInfo() {
-        const customerName = document.getElementById('customerName').value;
-        const customerPhone = document.getElementById('customerPhone').value;
-
-        if (customerName.trim() === '' || customerPhone.trim() === '') {
-            alert('Harap masukkan nama dan nomor HP pelanggan sebelum melanjutkan.');
-            return false;
-        }
-
-        return true;
+    function removeItem(index) {
+        cart.splice(index, 1);
+        updateCart();
     }
 
-    // Generate QR Code Function
-    function generateQRCode() {
-        const qrCodeContainer = document.getElementById('qr-code');
-        qrCodeContainer.innerHTML = ''; // Clear previous QR code
-
-        const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n` + 
-                       cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n');
-
-        // Use QRCode.js to generate the QR code
-        const qrCode = new QRCode(qrCodeContainer, {
-            text: qrData,
-            width: 128,
-            height: 128
-        });
-
-        qrCodeContainer.style.display = 'inline-block';
-    }
-
-    // Show Nota Modal
-    document.getElementById('showNotaButton').addEventListener('click', () => {
-        if (!validateCustomerInfo()) return; // Cek validasi input pelanggan
-
-        const customerName = document.getElementById('customerName').value;
-        const customerPhone = document.getElementById('customerPhone').value;
-
-        // Generate random transaction code and payment status
-        const transactionCode = 'TRX-' + Math.floor(Math.random() * 1000000);
-        const now = new Date();
-        const orderDate = now.toLocaleDateString('id-ID');
-
-        document.getElementById('notaCustomer').textContent = `${customerName} (${customerPhone})`;
-        document.getElementById('notaOrderDate').textContent = orderDate;
-        document.getElementById('notaTransactionCode').textContent = transactionCode;
-
-        const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-            acc[item.item].qty += 1;
-            return acc;
-        }, {});
-
-        const notaTableBody = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
-    <link rel="stylesheet" href="styless.css">
-
-    <!-- CDN jQuery and QR Code Plugin -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-</head>
-<body>
-    <header>
-        <img src="dokterbg.png" alt="Logo" class="small-logo">
-        <h1>Ayam Penyet Cobek-19</h1>
-        <nav>
-            <ul>
-                <li><a href="MENU.html">Home</a></li>
-                <li><a href="menu.html">Menu</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="cart.html">Keranjang</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="cart">
-        <h2>Items in Your Cart</h2>
-        <table id="cart-items" border="0">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <h3 id="total-price">Total: Rp 0</h3>
-
-        <!-- Input Manual Pelanggan -->
-        <div class="customer-info" style="margin: 20px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-            <label for="customerName">Nama Pelanggan:</label>
-            <input type="text" id="customerName" placeholder="Masukkan Nama">
-
-            <label for="customerPhone">Nomor HP:</label>
-            <input type="text" id="customerPhone" placeholder="Masukkan No HP">
-        </div>
-
-        <div class="buttons" style="text-align: center;">
-            <!-- Generate QR Code Button -->
-            <button class="button-small" onclick="generateQRCode()">Generate QR Code</button>
-            
-            <!-- Centered Barcode -->
-            <div class="qr-barcode" style="margin: 20px 0;">
-                <div id="qr-code" style="display: inline-block;"></div>
-                <button class="button-small" id="downloadQRCode" style="display: none;">Download QR Code</button>
-            </div>
-
-            <!-- Save Nota Button -->
-            <button class="button-small" id="showNotaButton">Show Nota</button>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
-    </footer>
-
-    <!-- Modal untuk menampilkan nota sebelum disimpan -->
-    <div id="notaModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            
-            <!-- Header Nota dengan Logo dan Informasi Gerai -->
-            <div class="nota-header">
-                <img src="dokterbg.png" alt="Logo" class="small-logo">
-                <h2>Ayam Penyet Cobek-19</h2>
-                <p>Jl. Akses UI No.82, Tugu, Depok</p>
-            </div>
-            <hr>
-
-            <!-- Informasi Transaksi dan Pesanan -->
-            <div class="nota-info">
-                <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
-                <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
-                <p><strong>Tipe Order:</strong> <span id="notaOrderType"></span></p>
-                <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
-                <p><strong>Status Pembayaran:</strong> <span id="notaPaymentStatus"></span></p>
-            </div>
-            <hr>
-
-            <!-- Tabel Detail Pesanan -->
-            <div class="nota-details">
-                <table id="notaTable" border="0">
-                    <thead>
-                        <tr>
-                            <th>Jumlah</th>
-                            <th>Menu</th>
-                            <th>Harga</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Item Pesanan akan dimasukkan secara dinamis di sini -->
-                    </tbody>
-                </table>
-            </div>
-            <hr><!-- Informasi Total -->
-            <div class="nota-totals">
-                <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
-                <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
-                <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
-                <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
-            </div>
-            <hr>
-
-            <!-- Tombol Download Nota -->
-            <div class="buttons" style="text-align: center;">
-                <button class="button-small" onclick="downloadNota()">Download Nota</button>
-            </div>
-        </div>
-    </div>
-
-<script>
-    const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-
-    // Update Cart Table
-    function updateCart() {
-        const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
-        cartItems.innerHTML = '';
-        let total = 0;
-
-        const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
-            acc[item.item].qty += 1;
-            return acc;
-        }, {});
-
-        Object.values(groupedCart).forEach((item) => {
-            const row = cartItems.insertRow();
-            row.insertCell(0).textContent = item.item;
-            row.insertCell(1).textContent = 'Rp ' + item.price.toLocaleString();
-            row.insertCell(2).textContent = item.qty;
-            row.insertCell(3).textContent = 'Rp ' + (item.price * item.qty).toLocaleString();
-            total += item.price * item.qty;
-        });
-
-        document.getElementById('total-price').textContent = 'Total: Rp ' + total.toLocaleString();
-    }
-
-    // Validasi input pelanggan sebelum menampilkan nota
-    function validateCustomerInfo() {
-        const customerName = document.getElementById('customerName').value;
-        const customerPhone = document.getElementById('customerPhone').value;
-
-        if (customerName.trim() === '' || customerPhone.trim() === '') {
-            alert('Harap masukkan nama dan nomor HP pelanggan sebelum melanjutkan.');
-            return false;
-        }
-
-        return true;
-    }
-
-    // Generate QR Code Function
-    function generateQRCode() {
-        const qrCodeContainer = document.getElementById('qr-code');
-        qrCodeContainer.innerHTML = ''; // Clear previous QR code
-
-        const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
-        const qrData = `Total Belanja: Rp ${totalPrice.toLocaleString()}\nDetail Pesanan:\n${cart.map(item => `${item.item} - Rp ${item.price.toLocaleString()}`).join('\n')}`;
-
-        // Use QRCode.js to generate the QR code
-        const qrCode = new QRCode(qrCodeContainer, {
-            text: qrData,
-            width: 128,
-            height: 128
-        });
-
-        qrCodeContainer.style.display = 'inline-block';
-        document.getElementById('downloadQRCode').style.display = 'inline-block';
-
-        // Add download button
-        document.getElementById('downloadQRCode').onclick = () => downloadQRCode(qrCode._oDrawing._elCanvas);
-    }
-
-    // Function to download QR code as image
-    function downloadQRCode(canvas) {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL();
-        link.download = 'qr-code.png';
-        link.click();
-    }
-
-    // Show Nota Modal
-    document.getElementById('showNotaButton').addEventListener('click', () => {
-        if (!validateCustomerInfo()) return; // Cek validasi input pelanggan
-
-        const customerName = document.getElementById('customerName').value;
-        const customerPhone = document.getElementById('customerPhone').value;
-
-        // Generate random transaction code and payment status
-        const transactionCode = 'TRX-' + Math.floor(Math.random() * 1000000);
-        const paymentStatus = 'Lunas';  // Atau bisa diubah ke status lain jika diperlukan
+    document.getElementById('showNota').addEventListener('click', () => {
+        const customerName = prompt("Masukkan nama pelanggan:");
+        const customerPhone = prompt("Masukkan nomor telepon pelanggan:");
         const orderDate = new Date().toLocaleString();
-        const orderType = 'Takeaway'; // Contoh tipe order
+        const orderType = 'Takeaway'; // Example order type
+        const transactionCode = Math.floor(Math.random() * 100000); // Random transaction code
+        const paymentStatus = 'Belum Dibayar'; // Example payment status
 
-        document.getElementById('notaCustomer').textContent = `${customerName} (${customerPhone})`;
+        document.getElementById('notaCustomer').textContent = customerName;
+        document.getElementById('notaPhone').textContent = customerPhone;
         document.getElementById('notaOrderDate').textContent = orderDate;
         document.getElementById('notaOrderType').textContent = orderType;
         document.getElementById('notaTransactionCode').textContent = transactionCode;
         document.getElementById('notaPaymentStatus').textContent = paymentStatus;
 
-        // Update Nota Table with Cart Items
+        // Populate Nota Table
         const notaTableBody = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
         notaTableBody.innerHTML = '';
         let subtotal = 0;
 
         cart.forEach(item => {
             const row = notaTableBody.insertRow();
-            row.insertCell(0).textContent = '1'; // Quantity (assumed 1 for simplicity)
+            row.insertCell(0).textContent = '1'; // Quantity assumed as 1
             row.insertCell(1).textContent = item.item;
             row.insertCell(2).textContent = 'Rp ' + item.price.toLocaleString();
             subtotal += item.price;
         });
 
-        // Update Total in Nota
-        const tax = subtotal * 0.1; // Contoh pajak 10%
+        // Calculate totals
+        const tax = subtotal * 0.1; // Example 10% tax
         const rounding = Math.ceil(subtotal + tax);
         const total = subtotal + tax;
 
@@ -425,11 +128,14 @@
         document.getElementById('notaRounding').textContent = 'Rp ' + rounding.toLocaleString();
         document.getElementById('notaTotal').textContent = 'Rp ' + total.toLocaleString();
 
-        // Show the Modal
+        // Show QR code (replace this with actual QR generation)
+        document.getElementById('qrCode').innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?data=' + transactionCode + '" alt="QR Code">';
+
+        // Show the modal
         document.getElementById('notaModal').style.display = 'block';
     });
 
-    // Download Nota as Image or PDF
+    // Download Nota as Image
     function downloadNota() {
         const notaContent = document.querySelector('.modal-content');
         html2canvas(notaContent).then(canvas => {
@@ -439,7 +145,7 @@
             link.click();
         });
 
-        // Alternatively, to save as PDF using jsPDF
+        // Download as PDF
         const doc = new jsPDF();
         doc.html(notaContent, {
             callback: function (doc) {
@@ -450,19 +156,65 @@
         });
     }
 
+    // Download QR Code
+    function downloadQr() {
+        const qrCodeImg = document.getElementById('qrCode').querySelector('img');
+        const link = document.createElement('a');
+        link.href = qrCodeImg.src;
+        link.download = 'qr_code.png';
+        link.click();
+    }
+
     // Close Modal Function
     function closeModal() {
         document.getElementById('notaModal').style.display = 'none';
     }
-    
+
     // Initialize Cart Display
     updateCart();
 
 </script>
 
-<!-- Include html2canvas and jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    hr {
+        margin: 20px 0;
+        border: 1px solid #ccc;
+    }
+</style>
+
 </body>
 </html>
-
