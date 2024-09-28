@@ -302,74 +302,81 @@
             qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file yang akan diunduh
        }
 
-        function showNota() {
-            const modal = document.getElementById('notaModal');
-            modal.style.display = 'block';
+    function showNota() {
+    // Menampilkan modal nota
+    const modal = document.getElementById('notaModal');
+    modal.style.display = 'block';
 
-            const notaCustomer = document.getElementById('customerName').value;
-            const notaOrderDate = new Date().toLocaleDateString();
-            const notaOrderType = 'Dine-In';
-            const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();
-            const notaPaymentStatus = 'Pending';
+    // Mendapatkan informasi pelanggan dan transaksi
+    const notaCustomer = document.getElementById('customerName').value;
+    const notaOrderDate = new Date().toLocaleDateString();
+    const notaOrderType = 'Dine-In';
+    const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();
+    const notaPaymentStatus = 'Pending';
 
-            document.getElementById('notaCustomer').textContent = notaCustomer;
-            document.getElementById('notaOrderDate').textContent = notaOrderDate;
-            document.getElementById('notaOrderType').textContent = notaOrderType;
-            document.getElementById('notaTransactionCode').textContent = notaTransactionCode;
-            document.getElementById('notaPaymentStatus').textContent = notaPaymentStatus;
+    // Menampilkan informasi di modal nota
+    document.getElementById('notaCustomer').textContent = notaCustomer;
+    document.getElementById('notaOrderDate').textContent = notaOrderDate;
+    document.getElementById('notaOrderType').textContent = notaOrderType;
+    document.getElementById('notaTransactionCode').textContent = notaTransactionCode;
+    document.getElementById('notaPaymentStatus').textContent = notaPaymentStatus;
 
-            const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-            notaTable.innerHTML = '';
-            let notaSubTotal = 0;
+    // Mengisi tabel dengan item belanja
+    const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
+    notaTable.innerHTML = ''; // Bersihkan isi sebelumnya
+    let notaSubTotal = 0;
 
-            cart.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.qty}</td>
-                    <td>${item.item}</td>
-                    <td>Rp ${item.price}</td>
-                `;
-                notaTable.appendChild(row);
-                notaSubTotal += item.price * item.qty;
-            });
-            
-    const notaSubTotal = 100000; // Simulasi subtotal
+    // Pastikan variabel cart tersedia dan berisi data item
+    if (cart && cart.length > 0) {
+        cart.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.qty}</td>
+                <td>${item.item}</td>
+                <td>Rp ${item.price}</td>
+            `;
+            notaTable.appendChild(row);
+            // Kalkulasi subtotal
+            notaSubTotal += item.price * item.qty;
+        });
+    } else {
+        // Jika cart kosong, tampilkan pesan
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td colspan="3" style="text-align: center;">Tidak ada item dalam keranjang</td>
+        `;
+        notaTable.appendChild(row);
+    }
+
+    // Kalkulasi tax, pembulatan, dan total
     const notaTax = notaSubTotal * 0.1; // Pajak 10%
-    
-    // Pembulatan total
-    const notaTotal = Math.ceil(notaSubTotal + notaTax);
+    const notaTotal = Math.ceil(notaSubTotal + notaTax); // Pembulatan ke atas
 
-    document.getElementById('notaSubTotal').innerText = `Rp ${notaSubTotal}`;
-    document.getElementById('notaTax').innerText = `Rp ${notaTax}`;
-    document.getElementById('notaTotal').innerText = `Rp ${notaTotal}`;
-            
-        //    const notaTax = notaSubTotal * 0.1;
-         //   const notaRounding = Math.ceil(notaSubTotal + notaTax);
-          //  const notaTotal = notaSubTotal + notaTax;
+    // Menampilkan hasil kalkulasi di modal
+    document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
+    document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
+    document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
+}
 
-          //  document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
-          //  document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
-         //   document.getElementById('notaRounding').textContent = `Rp ${notaRounding}`;
-         //   document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
-        }
+// Event listener untuk menampilkan nota saat tombol ditekan
+document.getElementById('showNotaButton').addEventListener('click', showNota);
 
-        document.getElementById('showNotaButton').addEventListener('click', showNota);
+// Fungsi untuk menutup modal nota
+function closeModal() {
+    document.getElementById('notaModal').style.display = 'none';
+}
 
-        function closeModal() {
-            document.getElementById('notaModal').style.display = 'none';
-        }
-
-        function saveNota() {
-            // Convert nota to image or download as PDF here
-            const notaElement = document.getElementById('notaContent');
-            html2canvas(notaElement).then(function(canvas) {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');  // Mengubah canvas menjadi gambar PNG
-                link.download = 'nota.png';  // Menetapkan nama file yang diunduh
-                link.click();
-            });
-            alert('Download Nota functionality coming soon!');
-        }
+// Fungsi untuk mendownload nota sebagai gambar
+function saveNota() {
+    const notaElement = document.getElementById('notaContent');
+    html2canvas(notaElement).then(function (canvas) {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'nota.png';
+        link.click();
+    });
+    alert('Nota berhasil didownload!');
+}
 
     </script>
 </body>
