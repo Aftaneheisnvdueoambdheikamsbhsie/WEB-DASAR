@@ -332,15 +332,25 @@
                 notaTable.appendChild(row);
                 notaSubTotal += item.price * item.qty;
             });
+            
+    const notaSubTotal = 100000; // Simulasi subtotal
+    const notaTax = notaSubTotal * 0.1; // Pajak 10%
+    
+    // Pembulatan total
+    const notaTotal = Math.ceil(notaSubTotal + notaTax);
 
-            const notaTax = notaSubTotal * 0.1;
-            const notaRounding = Math.ceil(notaSubTotal + notaTax);
-            const notaTotal = notaSubTotal + notaTax;
+    document.getElementById('notaSubTotal').innerText = `Rp ${notaSubTotal}`;
+    document.getElementById('notaTax').innerText = `Rp ${notaTax}`;
+    document.getElementById('notaTotal').innerText = `Rp ${notaTotal}`;
+            
+        //    const notaTax = notaSubTotal * 0.1;
+         //   const notaRounding = Math.ceil(notaSubTotal + notaTax);
+          //  const notaTotal = notaSubTotal + notaTax;
 
-            document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
-            document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
-            document.getElementById('notaRounding').textContent = `Rp ${notaRounding}`;
-            document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
+          //  document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
+          //  document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
+         //   document.getElementById('notaRounding').textContent = `Rp ${notaRounding}`;
+         //   document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
         }
 
         document.getElementById('showNotaButton').addEventListener('click', showNota);
