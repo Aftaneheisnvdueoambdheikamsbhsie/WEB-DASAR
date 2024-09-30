@@ -331,9 +331,10 @@
     if (cart && cart.length > 0) {
         cart.forEach(item => {
             const row = document.createElement('tr');
+            const itemTotal = item.price * item.qty; // Pastikan item.qty ada
             row.innerHTML = `
-                <td>${item.item}</td>
                 <td>${item.qty}</td>
+                <td>${item.item}</td>
                 <td>Rp ${item.price}</td>
             `;
             notaTable.appendChild(row);
