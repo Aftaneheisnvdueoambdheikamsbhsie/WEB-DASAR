@@ -332,8 +332,8 @@
         cart.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${item.qty}</td>
                 <td>${item.item}</td>
+                <td>${item.qty}</td>
                 <td>Rp ${item.price}</td>
             `;
             notaTable.appendChild(row);
@@ -348,8 +348,7 @@
         `;
         notaTable.appendChild(row);
     }
-
-        
+       
     // Kalkulasi tax, pembulatan, dan total
     const notaTax = notaSubTotal * 0.1; // Pajak 10%
     const notaTotal = Math.ceil(notaSubTotal + notaTax); // Pembulatan ke atas
