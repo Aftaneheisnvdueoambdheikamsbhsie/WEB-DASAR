@@ -301,7 +301,7 @@
             qrDownloadLink.href = qrCanvas.toDataURL('image/png');  // Mengambil data QR dalam format gambar
             qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file yang akan diunduh
        }
-    updateCart();
+  
         
     function showNota() {
     // Menampilkan modal nota
@@ -335,7 +335,6 @@
                 <td>${item.qty}</td>
                 <td>${item.item}</td>
                 <td>Rp ${item.price}</td>
-                <td>Rp ${item.price * item.qty}</td>
             `;
             notaTable.appendChild(row);
             // Kalkulasi subtotal
