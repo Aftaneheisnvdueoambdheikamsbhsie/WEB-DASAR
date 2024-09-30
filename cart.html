@@ -348,7 +348,7 @@
         `;
         notaTable.appendChild(row);
     }
-
+ updateCart();
     // Kalkulasi tax, pembulatan, dan total
     const notaTax = notaSubTotal * 0.1; // Pajak 10%
     const notaTotal = Math.ceil(notaSubTotal + notaTax); // Pembulatan ke atas
@@ -366,7 +366,7 @@ document.getElementById('showNotaButton').addEventListener('click', showNota);
 function closeModal() {
     document.getElementById('notaModal').style.display = 'none';
 }
-
+ updateCart();
 // Fungsi untuk mendownload nota sebagai gambar
 function saveNota() {
     const notaElement = document.getElementById('notaContent');
