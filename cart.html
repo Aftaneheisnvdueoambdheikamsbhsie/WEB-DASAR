@@ -332,7 +332,6 @@
     // Pastikan variabel cart tersedia dan berisi data item
     if (cart && cart.length > 0) {
         cart.forEach(item => {
-            const qty = item.qty !== undefined ? item.qty : 0; // Pastikan qty ada
             const row = document.createElement('tr');
             const itemTotal = item.price * item.qty; // Pastikan item.qty ada
             row.innerHTML = `
