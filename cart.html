@@ -349,6 +349,14 @@
         notaTable.appendChild(row);
     }
  updateCart();
+      const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
+     let subtotal = 0;
+        cartItems.forEach((item, index) => {
+        const row = notaTable.insertRow();
+        row.insertCell(0).textContent = index + 1; // No
+        row.insertCell(1).textContent = item.item; // Menu
+        row.insertCell(2).textContent = `Rp ${item.price.toFixed(2)}`; // Harga
+        subtotal += item.price; // Accumulate subtotal  
     // Kalkulasi tax, pembulatan, dan total
     const notaTax = notaSubTotal * 0.1; // Pajak 10%
     const notaTotal = Math.ceil(notaSubTotal + notaTax); // Pembulatan ke atas
