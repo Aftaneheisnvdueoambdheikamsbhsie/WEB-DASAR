@@ -321,12 +321,16 @@
     document.getElementById('notaOrderType').textContent = notaOrderType;
     document.getElementById('notaTransactionCode').textContent = notaTransactionCode;
     document.getElementById('notaPaymentStatus').textContent = notaPaymentStatus;
+    
+   
 
     // Mengisi tabel dengan item belanja
     const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
     notaTable.innerHTML = ''; // Bersihkan isi sebelumnya
     let notaSubTotal = 0;
     
+    const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+    console.log("Jumlah item di keranjang:", cart.length); // Debug
     // Pastikan variabel cart tersedia dan berisi data item
     if (cart && cart.length > 0) {
         cart.forEach(item => {
