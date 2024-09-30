@@ -329,8 +329,6 @@
     notaTable.innerHTML = ''; // Bersihkan isi sebelumnya
     let notaSubTotal = 0;
     
-    const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-    console.log("Jumlah item di keranjang:", cart.length); // Debug
     // Pastikan variabel cart tersedia dan berisi data item
     if (cart && cart.length > 0) {
         cart.forEach(item => {
