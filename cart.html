@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
-
     <!-- CDN jQuery and QR Code Plugin -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -209,7 +208,7 @@
             <div class="nota-header">
                 <img src="dokterbg.png" alt="Logo" class="small-logo">
                 <h2>Ayam Penyet Cobek-19</h2>
-                <p>Jl. Bhakti Abri,Pekapuran, Depok</p>
+                <p>Jl. Akses UI No.82, Tugu, Depok</p>
             </div>
 
             <div class="nota-info">
@@ -264,17 +263,17 @@
 
             Object.values(groupedCart).forEach(item => {
                 const row = document.createElement('tr');
-                row.innerHTML = 
+                row.innerHTML = `
                     <td>${item.item}</td>
                     <td>Rp ${item.price}</td>
                     <td>${item.qty}</td>
                     <td>Rp ${item.price * item.qty}</td>
-                ;
+                `;
                 cartItems.appendChild(row);
                 total += item.price * item.qty;
             });
 
-            document.getElementById('total-price').textContent = Total: Rp ${total};
+            document.getElementById('total-price').textContent = `Total: Rp ${total}`;
         }
 
         updateCart();
@@ -291,7 +290,7 @@
             const qrCodeContainer = document.getElementById('qr-code');
             qrCodeContainer.innerHTML = '';
             const qrCode = new QRCode(qrCodeContainer, {
-                text: ${customerName},${customerPhone},
+                text: `${customerName},${customerPhone}`,
                 width: 128,
                 height: 128
             });
@@ -299,10 +298,9 @@
             const qrCanvas = qrCodeContainer.querySelector('canvas');
             const qrDownloadLink = document.getElementById('qr-download-link');
             qrDownloadLink.href = qrCanvas.toDataURL('image/png');  // Mengambil data QR dalam format gambar
-            qrDownloadLink.download = ${customerName}_QRCode.png;  // Format nama file yang akan diunduh
+            qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file yang akan diunduh
        }
-    updateCart();
-        
+
     function showNota() {
     // Menampilkan modal nota
     const modal = document.getElementById('notaModal');
@@ -326,16 +324,16 @@
     const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
     notaTable.innerHTML = ''; // Bersihkan isi sebelumnya
     let notaSubTotal = 0;
-    
+
     // Pastikan variabel cart tersedia dan berisi data item
     if (cart && cart.length > 0) {
         cart.forEach(item => {
             const row = document.createElement('tr');
-            row.innerHTML = 
+            row.innerHTML = `
                 <td>${item.qty}</td>
                 <td>${item.item}</td>
                 <td>Rp ${item.price}</td>
-            ;
+            `;
             notaTable.appendChild(row);
             // Kalkulasi subtotal
             notaSubTotal += item.price * item.qty;
@@ -343,23 +341,22 @@
     } else {
         // Jika cart kosong, tampilkan pesan
         const row = document.createElement('tr');
-        row.innerHTML = 
+        row.innerHTML = `
             <td colspan="3" style="text-align: center;">Tidak ada item dalam keranjang</td>
-        ;
+        `;
         notaTable.appendChild(row);
     }
 
-        
     // Kalkulasi tax, pembulatan, dan total
     const notaTax = notaSubTotal * 0.1; // Pajak 10%
     const notaTotal = Math.ceil(notaSubTotal + notaTax); // Pembulatan ke atas
 
     // Menampilkan hasil kalkulasi di modal
-    document.getElementById('notaSubTotal').textContent = Rp ${notaSubTotal};
-    document.getElementById('notaTax').textContent = Rp ${notaTax};
-    document.getElementById('notaTotal').textContent = Rp ${notaTotal};
+    document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
+    document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
+    document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
 }
-updateCart();
+
 // Event listener untuk menampilkan nota saat tombol ditekan
 document.getElementById('showNotaButton').addEventListener('click', showNota);
 
@@ -367,7 +364,7 @@ document.getElementById('showNotaButton').addEventListener('click', showNota);
 function closeModal() {
     document.getElementById('notaModal').style.display = 'none';
 }
- updateCart();
+
 // Fungsi untuk mendownload nota sebagai gambar
 function saveNota() {
     const notaElement = document.getElementById('notaContent');
