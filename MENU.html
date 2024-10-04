@@ -1,12 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Makanan</title>
+    <title>Ayam Penyet Cobek-19</title>
     <link rel="stylesheet" href="styless.css">
+    <style>
+        /* Style untuk logo intro */
+        #intro-logo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #intro-logo img {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Style untuk menyembunyikan logo setelah intro selesai */
+        body.intro-complete #intro-logo {
+            display: none;
+        }
+
+        /* Style untuk bagian berita */
+        #news-section {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        #news-section h2 {
+            text-align: center;
+        }
+
+        #news-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .news-item {
+            width: calc(33% - 20px);
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-item h3 {
+            font-size: 1.2em;
+        }
+
+        .news-item p {
+            font-size: 1em;
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Intro Logo -->
+    <div id="intro-logo">
+        <img src="image.png" alt="Logo" width="150">
+    </div>
+
     <header>
         <img src="dokterbg.png" alt="Logo" class="small-logo">
         <h1>Ayam Penyet Cobek-19</h1>
@@ -19,19 +91,58 @@
             </ul>
         </nav>
     </header>
-    
-<section id="home">
+
+    <section id="home">
         <h2>Welcome to Ayam Penyet Cobek-19 </h2>
-        <br></br>
-        <p>Ayam penyet cobek-19 ini sudah tersertifikasi Halal. Tak hanya itu Ayam penyet cobek-19 juga sudah terdaftar 
-        sebagai gerai makanan yang sah dan sudah berlisensi oleh pemerintah.</p>
+        <p>Ayam penyet cobek-19 ini sudah tersertifikasi Halal. Tak hanya itu Ayam penyet cobek-19 juga sudah terdaftar
+            sebagai gerai makanan yang sah dan sudah berlisensi oleh pemerintah.</p>
         <p>Enjoy the best meals from around the world!</p>
-</section>
+    </section>
 
-
+    <!-- Bagian Berita -->
+    <section id="news-section">
+        <h2>Latest Food News</h2>
+        <div id="news-container">
+            <!-- Berita akan ditampilkan di sini -->
+        </div>
+    </section>
 
     <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Script untuk menghilangkan intro logo setelah 3 detik
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.classList.add('intro-complete');
+            }, 3000);
+        });
+
+        // Script untuk mengambil berita makanan menggunakan API
+        async function fetchFoodNews() {
+            const apiKey = 'API_KEY_ANDA'; // Masukkan API key dari NewsAPI atau lainnya
+            const url = `https://newsapi.org/v2/everything?q=food&apiKey=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const newsContainer = document.getElementById('news-container');
+
+            // Menampilkan setiap berita
+            data.articles.forEach(article => {
+                const newsItem = document.createElement('div');
+                newsItem.classList.add('news-item');
+                newsItem.innerHTML = `
+                    <h3>${article.title}</h3>
+                    <p>${article.description}</p>
+                    <a href="${article.url}" target="_blank">Read more</a>
+                `;
+                newsContainer.appendChild(newsItem);
+            });
+        }
+
+        // Memanggil fungsi fetchFoodNews untuk mendapatkan berita
+        fetchFoodNews();
+    </script>
 </body>
+
 </html>
