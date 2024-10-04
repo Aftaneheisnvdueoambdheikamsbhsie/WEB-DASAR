@@ -255,7 +255,7 @@
             let total = 0;
 
             const groupedCart = cart.reduce((acc, item) => {
-                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 };
+                if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 , price: item.price };
                 acc[item.item].qty += 1;
                 return acc;
             }, {});
