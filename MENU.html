@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayam Penyet Cobek-19</title>
+    <title>Ayam Penyet Covid-19</title>
     <link rel="stylesheet" href="styless.css">
     <style>
         /* Style untuk logo intro */
@@ -22,7 +22,7 @@
         }
 
         #intro-logo img {
-            animation: spin 3s linear infinite;
+            animation: spin 4s linear infinite;
         }
 
         @keyframes spin {
@@ -76,12 +76,13 @@
 <body>
     <!-- Intro Logo -->
     <div id="intro-logo">
-        <img src="image.png" alt="Logo" width="150">
+        <img src="dokterbg.png" alt="Logo" width="150">
+        <h1>Selamat Datang di Ayam Penyet Covid-19</h1>
     </div>
 
     <header>
         <img src="dokterbg.png" alt="Logo" class="small-logo">
-        <h1>Ayam Penyet Cobek-19</h1>
+        <h1>Ayam Penyet Covid-19</h1>
         <nav>
             <ul>
                 <li><a href="MENU.html">Home</a></li>
@@ -93,7 +94,7 @@
     </header>
 
     <section id="home">
-        <h2>Welcome to Ayam Penyet Cobek-19 </h2>
+        <h2>Welcome to Ayam Penyet Covid-19 </h2>
         <p>Ayam penyet cobek-19 ini sudah tersertifikasi Halal. Tak hanya itu Ayam penyet cobek-19 juga sudah terdaftar
             sebagai gerai makanan yang sah dan sudah berlisensi oleh pemerintah.</p>
         <p>Enjoy the best meals from around the world!</p>
@@ -121,7 +122,7 @@
 
         // Script untuk mengambil berita makanan menggunakan API
         async function fetchFoodNews() {
-            const apiKey = 'API_KEY_ANDA'; // Masukkan API key dari NewsAPI atau lainnya
+            const apiKey = '22-09-03'; // Masukkan API key dari NewsAPI atau lainnya
             const url = `https://newsapi.org/v2/everything?q=food&apiKey=${apiKey}`;
             const response = await fetch(url);
             const data = await response.json();
