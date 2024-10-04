@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - Ayam Penyet Cobek-19</title>
+    <title>Keranjang Belanja - Ayam Penyet Covid-19</title>
     <link rel="stylesheet" href="styless.css">
     <!-- CDN jQuery and QR Code Plugin -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -197,7 +197,7 @@
     </section>
 
     <footer>
-        <p>&copy; APC-19 2024 Ayam Penyet Cobek-19. All rights reserved.</p>
+        <p>&copy; APC-19 2024 Ayam Penyet Covid-19. All rights reserved.</p>
     </footer>
 
     <!-- Modal untuk menampilkan nota sebelum disimpan -->
@@ -207,7 +207,7 @@
             
             <div class="nota-header">
                 <img src="dokterbg.png" alt="Logo" class="small-logo">
-                <h2>Ayam Penyet Cobek-19</h2>
+                <h2>Ayam Penyet Covid-19</h2>
                 <p>Jl. Bhakti Abri, Pekapuran, Depok</p>
             </div>
 
@@ -232,19 +232,23 @@
                     <tbody></tbody>
                 </table>
             </div>
+
             <div class="nota-totals">
                 <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
                 <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
                 <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
                 <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
             </div>
+
             <div class="buttons" style="text-align: center;">
                 <button class="button-small" onclick="saveNota()">Download Nota</button>
             </div>
         </div>
     </div>
+
     <script>
-        const cart = JSON.parse(sessionStorage.getItem('cart'))  [];
+        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
         function updateCart() {
             const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
             cartItems.innerHTML = '';
@@ -272,11 +276,12 @@
         }
 
         updateCart();
+
         function generateQRCode() {
             const customerName = document.getElementById('customerName').value;
             const customerPhone = document.getElementById('customerPhone').value;
 
-            if (!customerName  !customerPhone) {
+            if (!customerName || !customerPhone) {
                 alert('Please enter customer details!');
                 return;
             }
@@ -340,7 +345,8 @@
         `;
         notaTable.appendChild(row);
     }
-        // Kalkulasi tax, pembulatan, dan total
+
+    // Kalkulasi tax, pembulatan, dan total
     const notaTax = notaSubTotal * 0.1; // Pajak 10%
     const notaTotal = Math.ceil(notaSubTotal + notaTax); // Pembulatan ke atas
 
@@ -372,4 +378,4 @@ function saveNota() {
 
     </script>
 </body>
-</html>               
+</html>
