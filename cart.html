@@ -220,7 +220,6 @@
             </div>
 
             <div class="separator"></div>
-
             <div class="nota-details">
                 <table id="notaTable">
                     <thead>
@@ -233,14 +232,12 @@
                     <tbody></tbody>
                 </table>
             </div>
-
             <div class="nota-totals">
                 <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
                 <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
                 <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
                 <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
             </div>
-
             <div class="buttons" style="text-align: center;">
                 <button class="button-small" onclick="saveNota()">Download Nota</button>
             </div>
@@ -248,7 +245,6 @@
     </div>
     <script>
         const cart = JSON.parse(sessionStorage.getItem('cart'))  [];
-
         function updateCart() {
             const cartItems = document.getElementById('cart-items').getElementsByTagName('tbody')[0];
             cartItems.innerHTML = '';
@@ -276,7 +272,6 @@
         }
 
         updateCart();
-
         function generateQRCode() {
             const customerName = document.getElementById('customerName').value;
             const customerPhone = document.getElementById('customerPhone').value;
@@ -377,7 +372,4 @@ function saveNota() {
 
     </script>
 </body>
-</html>
-
-        
-                
+</html>               
