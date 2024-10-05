@@ -90,6 +90,17 @@
                     <button onclick="addToCart('Tempe Goreng', 2000, document.getElementById('qty-tempe').value)">Tambah ke Keranjang</button>
                 </div>
             </div>
+            <div class="menu-item">
+                <img src="sambal.jpg" alt="Sambal merah">
+                <h3>Sambal merah</h3>
+                <p>Harga: Rp 5.000/bungkus</p>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('sambal', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-sambal" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('sambal', 1)">+</button>
+                    <button onclick="addToCart('Sambal merah', 5000, document.getElementById('qty-sambal').value)">Tambah ke Keranjang</button>
+                </div>
+            </div>
              <div class="menu-item">
                 <img src="ati.jpg" alt="Sate Ati Ampela">
                 <h3>Sate Ati Ampela</h3>
