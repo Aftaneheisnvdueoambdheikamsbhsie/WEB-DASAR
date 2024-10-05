@@ -6,19 +6,37 @@
     <title>Menu - Ayam Penyet Covid-19</title>
     <link rel="stylesheet" href="styless.css">
 </head>
-    <style>
-    .food-services {
+.footer-section {
+    background: linear-gradient(180deg, #ff8c00, #333); /* Gradasi dari oranye (#ff8c00) ke hitam (#333) */
+    padding: 20px 0;
+    text-align: center;
+    color: white; /* Warna teks putih untuk kontras */
+}
+
+.food-services {
     display: flex;
     list-style: none;
-    padding: 0; 
-    justify-content: space-around; 
-    align-items: center; 
-    }
+    padding: 0;
+    margin: 0;
+    justify-content: space-around;
+    align-items: center;
+}
 
-    .logo-small {
-    width: 50px; 
-    height: auto; 
-    }
+.logo-small {
+    width: 50px;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+.footer-section ul li {
+    margin: 0 15px;
+}
+
+.footer-section ul li a:hover img {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}
+
     </style>
 <body>
     <header>
@@ -239,13 +257,15 @@
         </div>
         
     </section>
+    
+<footer class="footer-section">
 <ul class="food-services">
     <li><a href="https://shopee.co.id/universal-link/now-food/shop/1256614?deep_and_deferred=1"><img src="Shopfood.png" alt="ShopeeFood Logo" class="logo-small"></li>
     <li><a href="https://wa.me/+6281212111004"><img src="WA.png" alt="WhatsApp Logo" class="logo-small"></a></li>
     <li><img src="GoFood.png" alt="GoFood Logo" class="logo-small"></li>
     <li><img src="Grabfood.svg" alt="GrabFood Logo" class="logo-small"></li>
 </ul>
-
+</footer>
 
   <footer>
         <p>&copy; APC-19 2024 Ayam Penyet Covid-19. All rights reserved.</p>
