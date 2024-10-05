@@ -6,6 +6,20 @@
     <title>Menu - Ayam Penyet Covid-19</title>
     <link rel="stylesheet" href="styless.css">
 </head>
+    <style>
+    .food-services {
+    display: flex;
+    list-style: none;
+    padding: 0; 
+    justify-content: space-around; 
+    align-items: center; 
+    }
+
+    .logo-small {
+    width: 50px; 
+    height: auto; 
+    }
+    </style>
 <body>
     <header>
         <img src="dokterbg.png" alt="Logo" class="small-logo">
@@ -99,6 +113,17 @@
                     <input type="number" class="quantity" id="qty-sambal" value="0" min="0" readonly>
                     <button onclick="updateQuantity('sambal', 1)">+</button>
                     <button onclick="addToCart('Sambal merah', 5000, document.getElementById('qty-sambal').value)">Tambah ke Keranjang</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="bumbu.jpg" alt="Bumbu Hitam">
+                <h3>Bumbu Hitam</h3>
+                <p>Harga: Rp 5.000/bungkus</p>
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity('bumbu', -1)">-</button>
+                    <input type="number" class="quantity" id="qty-bumbu" value="0" min="0" readonly>
+                    <button onclick="updateQuantity('bumbu', 1)">+</button>
+                    <button onclick="addToCart('Bumbu Hitam', 5000, document.getElementById('qty-bumbu').value)">Tambah ke Keranjang</button>
                 </div>
             </div>
              <div class="menu-item">
