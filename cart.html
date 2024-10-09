@@ -246,7 +246,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
     const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
     function updateCart() {
@@ -254,12 +254,14 @@
         cartItems.innerHTML = '';
         let total = 0;
 
+        // Mengelompokkan item berdasarkan nama dan menghitung qty
         const groupedCart = cart.reduce((acc, item) => {
             if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 , price: item.price };
             acc[item.item].qty += 1;
             return acc;
         }, {});
 
+        // Memproses setiap item di keranjang
         Object.values(groupedCart).forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -325,8 +327,14 @@
         let notaSubTotal = 0;
 
         // Pastikan variabel cart tersedia dan berisi data item
+        const groupedCart = cart.reduce((acc, item) => {
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 , price: item.price };
+            acc[item.item].qty += 1;
+            return acc;
+        }, {});
+
         if (cart && cart.length > 0) {
-            cart.forEach(item => {
+            Object.values(groupedCart).forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${item.qty}</td>
@@ -355,7 +363,6 @@
         document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
         document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
     }
-    updateCart();
 
     // Event listener untuk menampilkan nota saat tombol ditekan
     document.getElementById('showNotaButton').addEventListener('click', showNota);
