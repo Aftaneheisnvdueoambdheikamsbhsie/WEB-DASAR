@@ -278,32 +278,37 @@
     }
 
     function showNota() {
+        // Menampilkan modal nota
         const modal = document.getElementById('notaModal');
         modal.style.display = 'block';
 
+        // Mendapatkan informasi pelanggan dan transaksi
         const notaCustomer = document.getElementById('customerName').value;
         const notaOrderDate = new Date().toLocaleDateString();
         const notaOrderType = 'Dine-In';
         const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();
         const notaPaymentStatus = 'Pending';
 
+        // Menampilkan informasi di modal nota
         document.getElementById('notaCustomer').textContent = notaCustomer;
         document.getElementById('notaOrderDate').textContent = notaOrderDate;
         document.getElementById('notaOrderType').textContent = notaOrderType;
         document.getElementById('notaTransactionCode').textContent = notaTransactionCode;
         document.getElementById('notaPaymentStatus').textContent = notaPaymentStatus;
 
+        // Mengisi tabel dengan item belanja
         const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-        notaTable.innerHTML = '';
-        
+        notaTable.innerHTML = ''; // Bersihkan isi sebelumnya
         let notaSubTotal = 0;
+
+        // Pastikan variabel cart tersedia dan berisi data item
         const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0, price: item.price };
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 , price: item.price };
             acc[item.item].qty += 1;
             return acc;
         }, {});
 
-        if (cart.length > 0) {
+        if (cart && cart.length > 0) {
             Object.values(groupedCart).forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -312,9 +317,11 @@
                     <td>Rp ${item.price}</td>
                 `;
                 notaTable.appendChild(row);
+                // Kalkulasi subtotal
                 notaSubTotal += item.price * item.qty;
             });
         } else {
+            // Jika cart kosong, tampilkan pesan
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td colspan="3" style="text-align: center;">Tidak ada item dalam keranjang</td>
@@ -322,33 +329,40 @@
             notaTable.appendChild(row);
         }
 
-        // Hitung pajak dan total
-        const notaTax = notaSubTotal * 0.1;
-        const notaRounding = Math.ceil(notaTax);
-        const notaTotal = Math.ceil(notaSubTotal + notaTax);
+        // Kalkulasi tax, pembulatan, dan total
+        const notaTax = notaSubTotal * 0.1; // Pajak 10%
+        const notaTotal = Math.ceil(notaSubTotal + notaTax); // Pembulatan ke atas
 
+        // Menampilkan hasil kalkulasi di modal
         document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
         document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
-        document.getElementById('notaRounding').textContent = `Rp ${notaRounding}`;
         document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
     }
 
-    function saveNota() {
-        const notaElement = document.getElementById('notaModal');
+    // Event listener untuk menampilkan nota saat tombol ditekan
+    document.getElementById('showNotaButton').addEventListener('click', showNota);
 
-        html2canvas(notaElement).then(function (canvas) {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'nota.png';
-            link.click();
-        }).catch(err => {
-            console.error('Error generating nota:', err);
-        });
-    }
-
+    // Fungsi untuk menutup modal nota
     function closeModal() {
         document.getElementById('notaModal').style.display = 'none';
     }
+
+    // Fungsi untuk mendownload nota sebagai gambar
+    function saveNota() {
+    const notaElement = document.getElementById('notaContent'); // Pastikan ini adalah ID dari konten nota
+
+    // Tunggu modal atau konten tampil sepenuhnya
+    setTimeout(() => {
+        html2canvas(notaElement).then(function (canvas) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');  // Konversi elemen ke gambar PNG
+            link.download = 'nota.png';  // Nama file yang akan diunduh
+            link.click();  // Otomatis unduh
+        }).catch(err => {
+            console.error('Error generating nota:', err);
+        });
+    }, 500); // Berikan delay sekitar 500ms jika perlu
+}
 </script>
 </body>
 </html>
