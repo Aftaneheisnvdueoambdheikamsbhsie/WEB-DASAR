@@ -200,7 +200,7 @@
         <p>&copy; APC-19 2024 Ayam Penyet Covid-19. All rights reserved.</p>
     </footer>
 
-    <!-- Modal untuk menampilkan nota sebelum disimpan -->
+   <!-- Modal untuk menampilkan nota sebelum disimpan -->
 <div id="notaModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
@@ -256,7 +256,7 @@
 
         // Mengelompokkan item berdasarkan nama dan menghitung qty
         const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 , price: item.price };
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0, price: item.price };
             acc[item.item].qty += 1;
             return acc;
         }, {});
@@ -277,33 +277,28 @@
         document.getElementById('total-price').textContent = `Total: Rp ${total}`;
     }
 
-    updateCart();
-
     function showNota() {
         const modal = document.getElementById('notaModal');
-        modal.style.display = 'block';  // Tampilkan modal
+        modal.style.display = 'block';
 
-        // Ambil informasi pelanggan dan detail transaksi
         const notaCustomer = document.getElementById('customerName').value;
         const notaOrderDate = new Date().toLocaleDateString();
-        const notaOrderType = 'Dine-In';  // Jenis pesanan
-        const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();  // Kode transaksi acak
-        const notaPaymentStatus = 'Pending';  // Status pembayaran
+        const notaOrderType = 'Dine-In';
+        const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();
+        const notaPaymentStatus = 'Pending';
 
-        // Isi modal dengan detail pelanggan dan transaksi
         document.getElementById('notaCustomer').textContent = notaCustomer;
         document.getElementById('notaOrderDate').textContent = notaOrderDate;
         document.getElementById('notaOrderType').textContent = notaOrderType;
         document.getElementById('notaTransactionCode').textContent = notaTransactionCode;
         document.getElementById('notaPaymentStatus').textContent = notaPaymentStatus;
 
-        // Mengisi tabel dengan item belanja
         const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-        notaTable.innerHTML = '';  // Bersihkan isi tabel sebelumnya
-
+        notaTable.innerHTML = '';
+        
         let notaSubTotal = 0;
         const groupedCart = cart.reduce((acc, item) => {
-            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0 , price: item.price };
+            if (!acc[item.item]) acc[item.item] = { ...item, qty: 0, price: item.price };
             acc[item.item].qty += 1;
             return acc;
         }, {});
@@ -317,7 +312,7 @@
                     <td>Rp ${item.price}</td>
                 `;
                 notaTable.appendChild(row);
-                notaSubTotal += item.price * item.qty;  // Kalkulasi subtotal
+                notaSubTotal += item.price * item.qty;
             });
         } else {
             const row = document.createElement('tr');
@@ -328,33 +323,29 @@
         }
 
         // Hitung pajak dan total
-        const notaTax = notaSubTotal * 0.1;  // Pajak 10%
-        const notaRounding = Math.ceil(notaTax); // Pembulatan pajak
-        const notaTotal = Math.ceil(notaSubTotal + notaTax);  // Pembulatan ke atas
+        const notaTax = notaSubTotal * 0.1;
+        const notaRounding = Math.ceil(notaTax);
+        const notaTotal = Math.ceil(notaSubTotal + notaTax);
 
-        // Tampilkan subtotal, pajak, dan total di modal
         document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
         document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
         document.getElementById('notaRounding').textContent = `Rp ${notaRounding}`;
         document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
     }
 
-    // Fungsi untuk menyimpan nota sebagai gambar
     function saveNota() {
         const notaElement = document.getElementById('notaModal');
 
-        // Menggunakan html2canvas untuk menangkap konten nota sebagai gambar
         html2canvas(notaElement).then(function (canvas) {
             const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');  // Konversi canvas ke gambar
-            link.download = 'nota.png';  // Nama file untuk diunduh
-            link.click();  // Trigger unduh
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'nota.png';
+            link.click();
         }).catch(err => {
             console.error('Error generating nota:', err);
         });
     }
 
-    // Fungsi untuk menutup modal nota
     function closeModal() {
         document.getElementById('notaModal').style.display = 'none';
     }
