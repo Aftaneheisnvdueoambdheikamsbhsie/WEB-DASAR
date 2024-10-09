@@ -278,6 +278,28 @@
     }
 
     updateCart();
+    function generateQRCode() {
+        const customerName = document.getElementById('customerName').value;
+        const customerPhone = document.getElementById('customerPhone').value;
+
+        if (!customerName || !customerPhone) {
+            alert('Please enter customer details!');
+            return;
+        }
+
+        const qrCodeContainer = document.getElementById('qr-code');
+        qrCodeContainer.innerHTML = '';
+        const qrCode = new QRCode(qrCodeContainer, {
+            text: `${customerName},${customerPhone}`,
+            width: 128,
+            height: 128
+        });
+
+        const qrCanvas = qrCodeContainer.querySelector('canvas');
+        const qrDownloadLink = document.getElementById('qr-download-link');
+        qrDownloadLink.href = qrCanvas.toDataURL('image/png');  // Mengambil data QR dalam format gambar
+        qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file yang akan diunduh
+   }
 
     function showNota() {
         // Menampilkan modal nota
