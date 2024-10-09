@@ -301,12 +301,21 @@
             } else {
                 const orderOnWhatsApp = confirm("Apakah Anda ingin memesan lewat WhatsApp?");
                 if (orderOnWhatsApp) {
-                    // Jika pelanggan memilih WhatsApp, buka WhatsApp dengan pesan otomatis
-                    window.location.href = 'https://wa.me/+6281212111004?text=' + encodeURIComponent(getCartSummary());
-                } else {
-                    // Jika pelanggan tidak memilih WhatsApp, arahkan ke halaman keranjang
-                    window.location.href = "cart.html";
-                }
+                    const now = new Date();
+                        const currentHour = now.getHours();
+
+                        // Periksa jika jam antara 18.00 dan 00.00
+                        if (currentHour >= 18 || currentHour < 24) {
+                            const whatsappNumber = "+6281212111004"; // Ganti dengan nomor WhatsApp Anda
+                            const message = encodeURIComponent(`Pelanggan telah menambahkan ${qty} x ${item} ke keranjang.`);
+                            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+                        } else {
+                            alert("Pesanan melalui WhatsApp hanya bisa dilakukan antara jam 18.00-00.00.");
+                        }
+                    } else {
+                        // Jika tidak, arahkan ke halaman keranjang
+                        window.location.href = 'cart.html';
+                    }
             }
         }
 
