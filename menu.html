@@ -312,7 +312,7 @@
 
         function getCartSummary() {
             let cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
-            let summary = ("Pesanan  "+ customerName +" : \n");
+            let summary = ("Pesanan Anda : \n");
             cartItems.forEach((item, index) => {
                 summary += `${index + 1}. ${item.item} - Rp ${item.price}\n`;
             });
