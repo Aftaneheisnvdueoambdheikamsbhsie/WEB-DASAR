@@ -295,11 +295,15 @@
             height: 128
         });
 
+         setTimeout(() => {
         const qrCanvas = qrCodeContainer.querySelector('canvas');
-        const qrDownloadLink = document.getElementById('qr-download-link');
-        qrDownloadLink.href = qrCanvas.toDataURL('image/png');  // Mengambil data QR dalam format gambar
-        qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file yang akan diunduh
-   }
+        if (qrCanvas) {
+            const qrDownloadLink = document.getElementById('qr-download-link');
+            qrDownloadLink.href = qrCanvas.toDataURL('image/png');  // Mengambil data QR dalam format gambar
+            qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file yang akan diunduh
+        }
+    }, 100); // Delay sedikit agar QR Code selesai dirender
+}
 
     function showNota() {
         // Menampilkan modal nota
@@ -373,7 +377,7 @@
 
     // Fungsi untuk mendownload nota sebagai gambar
     function saveNota() {
-    const notaElement = document.getElementById('notaContent'); // Pastikan ini adalah ID dari konten nota
+    const notaElement = document.getElementById('notaModal'); // Pastikan ini adalah ID dari konten nota
 
     // Tunggu modal atau konten tampil sepenuhnya
     setTimeout(() => {
