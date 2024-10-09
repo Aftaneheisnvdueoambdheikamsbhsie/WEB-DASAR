@@ -261,13 +261,13 @@
             return acc;
         }, {});
 
-        // Memproses setiap item di keranjang
+       // Memproses setiap item di keranjang
         Object.values(groupedCart).forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${item.qty}</td>
                 <td>${item.item}</td>
                 <td>Rp ${item.price}</td>
+                <td>${item.qty}</td>
                 <td>Rp ${item.price * item.qty}</td>
             `;
             cartItems.appendChild(row);
@@ -276,6 +276,8 @@
 
         document.getElementById('total-price').textContent = `Total: Rp ${total}`;
     }
+
+    updateCart();
 
     function showNota() {
         // Menampilkan modal nota
