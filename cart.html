@@ -201,52 +201,52 @@
     </footer>
 
     <!-- Modal untuk menampilkan nota sebelum disimpan -->
-    <div id="notaModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            
-            <div class="nota-header">
-                <img src="dokterbg.png" alt="Logo" class="small-logo">
-                <h2>Ayam Penyet Covid-19</h2>
-                <p>Jl. Bhakti Abri, Pekapuran, Depok</p>
-            </div>
+<div id="notaModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        
+        <div class="nota-header">
+            <img src="dokterbg.png" alt="Logo" class="small-logo">
+            <h2>Ayam Penyet Covid-19</h2>
+            <p>Jl. Bhakti Abri, Pekapuran, Depok</p>
+        </div>
 
-            <div class="nota-info">
-                <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
-                <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
-                <p><strong>Tipe Order:</strong> <span id="notaOrderType"></span></p>
-                <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
-                <p><strong>Status Pembayaran:</strong> <span id="notaPaymentStatus"></span></p>
-            </div>
+        <div class="nota-info">
+            <p><strong>Pelanggan:</strong> <span id="notaCustomer"></span></p>
+            <p><strong>Tanggal Order:</strong> <span id="notaOrderDate"></span></p>
+            <p><strong>Tipe Order:</strong> <span id="notaOrderType"></span></p>
+            <p><strong>Kode Transaksi:</strong> <span id="notaTransactionCode"></span></p>
+            <p><strong>Status Pembayaran:</strong> <span id="notaPaymentStatus"></span></p>
+        </div>
 
-            <div class="separator"></div>
-            <div class="nota-details">
-                <table id="notaTable">
-                    <thead>
-                        <tr>
-                            <th>Jumlah</th>
-                            <th>Menu</th>
-                            <th>Harga</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+        <div class="separator"></div>
+        <div class="nota-details">
+            <table id="notaTable">
+                <thead>
+                    <tr>
+                        <th>Jumlah</th>
+                        <th>Menu</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
-            <div class="nota-totals">
-                <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
-                <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
-                <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
-                <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
-            </div>
+        <div class="nota-totals">
+            <p><strong>Sub Total:</strong> <span id="notaSubTotal"></span></p>
+            <p><strong>Pajak:</strong> <span id="notaTax"></span></p>
+            <p><strong>Pembulatan:</strong> <span id="notaRounding"></span></p>
+            <p><strong>Total Semua:</strong> <span id="notaTotal"></span></p>
+        </div>
 
-            <div class="buttons" style="text-align: center;">
-                <button class="button-small" onclick="saveNota()">Download Nota</button>
-            </div>
+        <div class="buttons" style="text-align: center;">
+            <button class="button-small" onclick="saveNota()">Download Nota</button>
         </div>
     </div>
+</div>
 
-   <script>
+<script>
     const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
     function updateCart() {
@@ -265,9 +265,9 @@
         Object.values(groupedCart).forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
+                <td>${item.qty}</td>
                 <td>${item.item}</td>
                 <td>Rp ${item.price}</td>
-                <td>${item.qty}</td>
                 <td>Rp ${item.price * item.qty}</td>
             `;
             cartItems.appendChild(row);
@@ -279,61 +279,27 @@
 
     updateCart();
 
-    function generateQRCode() {
-    const customerName = document.getElementById('customerName').value;
-    const customerPhone = document.getElementById('customerPhone').value;
-
-    if (!customerName || !customerPhone) {
-        alert('Please enter customer details!');
-        return;
-    }
-
-    const qrCodeContainer = document.getElementById('qr-code');
-    qrCodeContainer.innerHTML = ''; // Reset QR code container
-    
-    const qrCode = new QRCode(qrCodeContainer, {
-        text: `${customerName},${customerPhone}`,
-        width: 128,
-        height: 128
-    });
-
-    // Tunggu sebentar agar QR Code di-render sepenuhnya
-    setTimeout(() => {
-        const qrCanvas = qrCodeContainer.querySelector('canvas');
-        const qrDownloadLink = document.getElementById('qr-download-link');
-        
-        if (qrCanvas) {
-            qrDownloadLink.href = qrCanvas.toDataURL('image/png');  // Ambil data QR dalam format gambar
-            qrDownloadLink.download = `${customerName}_QRCode.png`;  // Format nama file untuk diunduh
-            qrDownloadLink.click();  // Otomatis unduh
-        } else {
-            alert('QR code generation failed.');
-        }
-    }, 500); // Berikan delay sekitar 500ms
-}
-
-
- function showNota() {
+    function showNota() {
         const modal = document.getElementById('notaModal');
-        modal.style.display = 'block';  // Show modal
+        modal.style.display = 'block';  // Tampilkan modal
 
-        // Get customer information and transaction details
+        // Ambil informasi pelanggan dan detail transaksi
         const notaCustomer = document.getElementById('customerName').value;
         const notaOrderDate = new Date().toLocaleDateString();
-        const notaOrderType = 'Dine-In';  // For example, you can change this based on the actual order type
-        const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();  // Random code
-        const notaPaymentStatus = 'Pending';  // Example status
+        const notaOrderType = 'Dine-In';  // Jenis pesanan
+        const notaTransactionCode = Math.random().toString(36).substr(2, 9).toUpperCase();  // Kode transaksi acak
+        const notaPaymentStatus = 'Pending';  // Status pembayaran
 
-        // Populate modal with customer and transaction details
+        // Isi modal dengan detail pelanggan dan transaksi
         document.getElementById('notaCustomer').textContent = notaCustomer;
         document.getElementById('notaOrderDate').textContent = notaOrderDate;
         document.getElementById('notaOrderType').textContent = notaOrderType;
         document.getElementById('notaTransactionCode').textContent = notaTransactionCode;
         document.getElementById('notaPaymentStatus').textContent = notaPaymentStatus;
 
-        // Populate item table
+        // Mengisi tabel dengan item belanja
         const notaTable = document.getElementById('notaTable').getElementsByTagName('tbody')[0];
-        notaTable.innerHTML = '';  // Clear existing table content
+        notaTable.innerHTML = '';  // Bersihkan isi tabel sebelumnya
 
         let notaSubTotal = 0;
         const groupedCart = cart.reduce((acc, item) => {
@@ -342,7 +308,7 @@
             return acc;
         }, {});
 
-        if (cart && cart.length > 0) {
+        if (cart.length > 0) {
             Object.values(groupedCart).forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -351,7 +317,7 @@
                     <td>Rp ${item.price}</td>
                 `;
                 notaTable.appendChild(row);
-                notaSubTotal += item.price * item.qty;
+                notaSubTotal += item.price * item.qty;  // Kalkulasi subtotal
             });
         } else {
             const row = document.createElement('tr');
@@ -361,34 +327,34 @@
             notaTable.appendChild(row);
         }
 
-        // Calculate tax and total
-        const notaTax = notaSubTotal * 0.1;  // 10% tax
-        const notaTotal = Math.ceil(notaSubTotal + notaTax);  // Round up total
+        // Hitung pajak dan total
+        const notaTax = notaSubTotal * 0.1;  // Pajak 10%
+        const notaRounding = Math.ceil(notaTax); // Pembulatan pajak
+        const notaTotal = Math.ceil(notaSubTotal + notaTax);  // Pembulatan ke atas
 
-        // Display subtotal, tax, and total in modal
+        // Tampilkan subtotal, pajak, dan total di modal
         document.getElementById('notaSubTotal').textContent = `Rp ${notaSubTotal}`;
         document.getElementById('notaTax').textContent = `Rp ${notaTax}`;
+        document.getElementById('notaRounding').textContent = `Rp ${notaRounding}`;
         document.getElementById('notaTotal').textContent = `Rp ${notaTotal}`;
     }
 
-    // Function to download the nota as an image
+    // Fungsi untuk menyimpan nota sebagai gambar
     function saveNota() {
-        const notaElement = document.getElementById('notaContent');
+        const notaElement = document.getElementById('notaModal');
 
-        // Capture the nota content as an image using html2canvas
-        setTimeout(() => {
-            html2canvas(notaElement).then(function (canvas) {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');  // Convert canvas to image
-                link.download = 'nota.png';  // Filename for the download
-                link.click();  // Trigger download
-            }).catch(err => {
-                console.error('Error generating nota:', err);
-            });
-        }, 500);  // Small delay to ensure modal is fully rendered
+        // Menggunakan html2canvas untuk menangkap konten nota sebagai gambar
+        html2canvas(notaElement).then(function (canvas) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');  // Konversi canvas ke gambar
+            link.download = 'nota.png';  // Nama file untuk diunduh
+            link.click();  // Trigger unduh
+        }).catch(err => {
+            console.error('Error generating nota:', err);
+        });
     }
 
-    // Function to close the nota modal
+    // Fungsi untuk menutup modal nota
     function closeModal() {
         document.getElementById('notaModal').style.display = 'none';
     }
