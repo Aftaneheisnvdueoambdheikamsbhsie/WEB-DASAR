@@ -254,80 +254,67 @@
         <p>&copy; APC-19 2024 Ayam Penyet Covid-19. All rights reserved.</p>
     </footer>
 
-      <script>
-        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+<script>
+    const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-        function addToCart(item, price, quantity) {
-            const qty = parseInt(quantity);
-            if (qty > 0) {
-                // Cek apakah nama pelanggan sudah diinput
-                let customerName = sessionStorage.getItem('customerName');
-                if (!customerName) {
-                    customerName = prompt("Masukkan nama Anda:");
-                    if (customerName) {
-                        sessionStorage.setItem('customerName', customerName);
-                    } else {
-                        alert("Nama diperlukan untuk melanjutkan.");
-                        return;
-                    }
-                }
+    function addToCart(item, price, quantity) {
+        const currentHour = new Date().getHours();
+        
+        // Cek apakah saat ini berada dalam waktu operasional (jam 18 - 24)
+        if (currentHour < 18 || currentHour > 24) {
+            alert("Maaf, kami hanya menerima pesanan antara jam 18:00 hingga 24:00.");
+            return;
+        }
+        
+        const qty = parseInt(quantity);
+        if (qty > 0) {
+            for (let i = 0; i < qty; i++) {
+                cart.push({ item, price });
+            }
+            alert(qty + " x " + item + " telah ditambahkan ke keranjang!");
+            sessionStorage.setItem('cart', JSON.stringify(cart));
 
-                for (let i = 0; i < qty; i++) {
-                    cart.push({ item, price, customerName });
-                }
-                alert(qty + " x " + item + " telah ditambahkan ke keranjang oleh " + customerName + "!");
-                sessionStorage.setItem('cart', JSON.stringify(cart));
+            // Tanyakan apakah pelanggan ingin menambah item atau tidak
+            askForMoreOrders();
+        } else {
+            alert("Silakan masukkan jumlah yang valid.");
+        }
+    }
 
-                // Tanyakan apakah pelanggan ingin menambah item atau tidak
-                askForMoreOrders();
+    function updateQuantity(id, change) {
+        const quantityInput = document.getElementById('qty-' + id);
+        let currentValue = parseInt(quantityInput.value);
+        currentValue += change;
+        if (currentValue < 0) currentValue = 0;
+        quantityInput.value = currentValue;
+    }
+
+    function askForMoreOrders() {
+        const moreOrders = confirm("Apakah masih ada yang ingin Anda pesan?");
+        if (moreOrders) {
+            // Jika pelanggan ingin pesan lagi, biarkan mereka melanjutkan.
+            alert("Silakan tambahkan lagi ke keranjang.");
+        } else {
+            const orderOnWhatsApp = confirm("Apakah Anda ingin memesan lewat WhatsApp?");
+            if (orderOnWhatsApp) {
+                // Jika pelanggan memilih WhatsApp, buka WhatsApp dengan pesan otomatis
+                window.location.href = 'https://wa.me/+6281212111004?text=' + encodeURIComponent(getCartSummary());
             } else {
-                alert("Silakan masukkan jumlah yang valid.");
+                // Jika pelanggan tidak memilih WhatsApp, arahkan ke halaman keranjang
+                window.location.href = "cart.html";
             }
         }
+    }
 
-        function updateQuantity(id, change) {
-            const quantityInput = document.getElementById('qty-' + id);
-            let currentValue = parseInt(quantityInput.value);
-            currentValue += change;
-            if (currentValue < 0) currentValue = 0;
-            quantityInput.value = currentValue;
-        }
-
-        function askForMoreOrders() {
-            const moreOrders = confirm("Apakah masih ada yang ingin Anda pesan?");
-            if (moreOrders) {
-                // Jika pelanggan ingin pesan lagi, biarkan mereka melanjutkan.
-                alert("Silakan tambahkan lagi ke keranjang.");
-            } else {
-                const orderOnWhatsApp = confirm("Apakah Anda ingin memesan lewat WhatsApp?");
-                if (orderOnWhatsApp) {
-                    const now = new Date();
-                        const currentHour = now.getHours();
-
-                        // Periksa jika jam antara 18.00 dan 00.00
-                        if (currentHour >= 18 || currentHour < 24) {
-                            const whatsappNumber = "+6281212111004"; // Ganti dengan nomor WhatsApp Anda
-                            const message = encodeURIComponent(`Pelanggan telah menambahkan ${qty} x ${item} ke keranjang.`);
-                            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-                        } else {
-                            alert("Pesanan melalui WhatsApp hanya bisa dilakukan antara jam 18.00-00.00.");
-                        }
-                    } else {
-                        // Jika tidak, arahkan ke halaman keranjang
-                        window.location.href = 'cart.html';
-                    }
-            }
-        }
-
-        function getCartSummary() {
-            let cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
-            let summary = ("Pesanan Anda : \n");
-            cartItems.forEach((item, index) => {
-                summary += `${index + 1}. ${item.item} - Rp ${item.price}\n`;
-            });
-            summary += "\nTotal item: " + cartItems.length;
-            return summary;
-        }
-    </script>
+    function getCartSummary() {
+        let cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
+        let summary = "Pesanan Anda: \n";
+        cartItems.forEach((item, index) => {
+            summary += `${index + 1}. ${item.item} - Rp ${item.price}\n`;
+        });
+        summary += "\nTotal item: " + cartItems.length;
+        return summary;
+    }
+</script>
 </body>
 </html>
