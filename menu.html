@@ -254,6 +254,7 @@
         <p>&copy; APC-19 2024 Ayam Penyet Covid-19. All rights reserved.</p>
     </footer>
 
+   
     <script>
         const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
@@ -265,6 +266,18 @@
                 }
                 alert(qty + " x " + item + " telah ditambahkan ke keranjang!");
                 sessionStorage.setItem('cart', JSON.stringify(cart)); // Simpan ke sessionStorage
+
+                // Mendapatkan jam saat ini
+                const now = new Date();
+                const currentHour = now.getHours();
+
+                // Periksa jika jam antara 18.00 dan 00.00
+                if (currentHour >= 18 || currentHour < 24) {
+                    // Kirim pesan ke WhatsApp
+                    const whatsappNumber = "+6281212111004"; // Ganti dengan nomor WhatsApp Anda
+                    const message = encodeURIComponent(`Pelanggan telah menambahkan ${qty} x ${item} ke keranjang.`);
+                    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+                }
             } else {
                 alert("Silakan masukkan jumlah yang valid.");
             }
