@@ -259,6 +259,29 @@
 
     function addToCart(item, price, quantity) {
         const currentHour = new Date().getHours();
+
+        // Atur jam pemesanan (misalnya hanya bisa memesan dari jam 10:00 hingga 18:00)
+        function isOrderTime() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            return currentHour >= 16 && currentHour <= 24;
+        }
+
+        // Disable tombol "Tambah ke Keranjang" jika di luar jam pemesanan
+        function updateOrderButtons() {
+            const orderButtons = document.querySelectorAll('.order-button');
+            orderButtons.forEach(button => {
+                if (!isOrderTime()) {
+                    button.disabled = true;
+                    button.textContent = "Pemesanan Tutup";
+                }
+            });
+        }
+
+        // Jalankan ketika halaman di-load
+        window.onload = function() {
+            updateOrderButtons();
+        };
         
         // Cek apakah saat ini berada dalam waktu operasional (jam 18 - 24)
         if (currentHour <= 16 || currentHour > 24) {
